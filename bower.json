@@ -1,0 +1,23 @@
+{
+  "name": "marston.club",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Max Fresonke <max@fresonke.com>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6",
+    "font-awesome": "^4.5.0"
+  }
+}
