@@ -31,7 +31,8 @@ router.post('/', function (req, res) {
   const timeEnd = req.body.timeEnd
   const submitType = req.body.submitType
 
-
+  // Build the preview page and submit it ;)
+  res.send('Dummy Test Text!')
 })
 
 module.exports = router
