@@ -14,7 +14,7 @@
       <div class="col-md-2"></div>
     </div>
     <div class="row">
-      <div class="col-md-4" align="center">
+      <div class="col-lg-6" align="center">
         <div class="form-group">
           <h3>Member Information</h3>
           <div id="memberInfoContainer"></div>
@@ -33,31 +33,15 @@
           </div>
         </div>
       </div>
-      <!-- Begin Day Of Week Picker -->
-      <div class="col-md-4">
-        <div class="panel panel-default">
-          <!-- Default panel contents -->
-          <div class="panel-heading text-center">
-            What Day(s) Will Your Group Meet?
-          </div>
-          <!-- Begin Form In Panel. -->
-          <table class="table">
-            <tr>
-              {{#each daysOfWeek}}
-                <td>{{this}}
-                  <br/>
-                  <div class="checkbox" align="center">
-                    <input type="checkbox" id="checkbox{{this}}" name="daysSelected" value="{{this}}">
-                    <label for="checkbox{{this}}"></label>
-                  </div>
-                </td>
-              {{/each}}
-            </tr>
-          </table>
+      <div class="col-lg-6 text-center">
+        <h3>What Day(s) Will Your Group Meet?</h3>
+        <div class="btn-group" data-toggle="buttons">
+          {{#each daysOfWeek}}
+            <label class="btn btn-primary">
+              <input type="checkbox" id="checkbox{{this}}" name="daysSelected" value="{{this}}">{{this}}
+            </label>
+          {{/each}}
         </div>
-      </div>
-      <!-- Begin Start Time Picker -->
-      <div class="col-md-4 text-center">
         <h3>Choose a Starting Time</h3>
         <input id="pickadate-begin" name="timeBegin" class="" type="text" placeholder="Start Time" readonly="" aria-haspopup="true">
         <br/>
