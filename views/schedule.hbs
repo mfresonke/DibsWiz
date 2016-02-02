@@ -1,0 +1,81 @@
+<div class="container" role="main">
+  <form role="form" method="post">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-8" align="center">
+        <h1>Create a Marston Meetup!</h1>
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon" id="basic-addon3">Meetup Name</span>
+          <input name="meetupName" type="text" class="form-control" placeholder="e.g. Digital Design Meetup" aria-describedby="sizing-addon1">
+        </div>
+        <br />
+        <br />
+      </div>
+      <div class="col-md-2"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4" align="center">
+        <div class="form-group">
+          <h3>Member Information</h3>
+          <div id="memberInfoContainer"></div>
+          <br/>
+          <div class="btn-group btn-group-justified" role="group">
+            <div class="btn-group" role="group">
+              <button type="button" id="btnAddPhone" class="btn btn-default btn" name="submitType" value="once">
+                <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> Add Number
+              </button>
+            </div>
+            <div class="btn-group" role="group">
+              <button type="button" id="btnAddUser" class="btn btn-default btn" name="submitType" value="once">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add Username
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Begin Day Of Week Picker -->
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <!-- Default panel contents -->
+          <div class="panel-heading text-center">
+            What Day(s) Will Your Group Meet?
+          </div>
+          <!-- Begin Form In Panel. -->
+          <table class="table">
+            <tr>
+              {{#each daysOfWeek}}
+                <td>{{this}}
+                  <br/>
+                  <div class="checkbox" align="center">
+                    <input type="checkbox" id="checkbox{{this}}" name="daysSelected" value="{{this}}">
+                    <label for="checkbox{{this}}"></label>
+                  </div>
+                </td>
+              {{/each}}
+            </tr>
+          </table>
+        </div>
+      </div>
+      <!-- Begin Start Time Picker -->
+      <div class="col-md-4 text-center">
+        <h3>Choose a Starting Time</h3>
+        <input id="pickadate-begin" name="timeBegin" class="" type="text" placeholder="Start Time" readonly="" aria-haspopup="true">
+        <br/>
+        <h3>Choose an Ending Time</h3>
+        <input id="pickadate-end" name="timeEnd" class="" type="text" placeholder="End Time" readonly="" aria-haspopup="true">
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <div class="btn-group btn-group-justified" role="group">
+          <div class="btn-group" role="group">
+            <button type="submit" class="btn btn-success btn-lg" name="submitType" value="once">Schedule Once</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="submit" class="btn btn-primary btn-lg" name="submitType" value="weekly">Schedule Weekly</button>
+          </div>
+        </div>
+      </div>
+  </form>
+  </div>

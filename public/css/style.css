@@ -1,6 +1,21 @@
+input[type=text], input[type=password], input[type=email], input[type=date], input[type=number], input[type=search], textarea {
+    border: 3px solid #cccccc;
+    padding: .6em 1em;
+    font-weight: 200;
+    width: 100%;
+    -webkit-appearance: none;
+    box-shadow: none;
+    box-sizing: border-box;
+}
+
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding-top: 80px;
+}
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
 }
 
 a {

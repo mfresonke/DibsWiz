@@ -4,8 +4,11 @@
     <title>{{title}}</title>
     <!-- Common Scripts for the Entire Program -->
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
-    <!--link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css"-->
-    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/public/css/style.css" />
+    {{#each stylesheets}}
+      <link rel="stylesheet" href="{{this}}" />
+    {{/each}}
 
   </head>
   <body>

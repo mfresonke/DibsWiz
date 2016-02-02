@@ -1,3 +1,6 @@
+# Manually Minified Public Stuff
+public/*.min.*
+
 *.DS_Store
 # Logs
 logs

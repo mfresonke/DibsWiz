@@ -12,6 +12,7 @@ const User = require('./models/User')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const hbs = require('hbs')
+const components = require('./helpers/components')
 
 const app = express()
 
@@ -40,6 +41,9 @@ process.on('SIGINT', function () {
     process.exit(0)
   })
 })
+
+/* PRECOMPILE/MINIFY FILES */
+components.compileAndMinify()
 
 /* SETUP MIDDLEWARE */
 
@@ -82,15 +86,16 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 // set up static file serving
-app.use('/public', express.static(path.join(__dirname, 'public')))
+app.use('/public', express.static(path.join(__dirname, components.publicFolder)))
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')))
 
-// // Require Controllers to Implement Routes
+/* SETUP ROUTES */
 app.get('/', function (req, res, next) {
   res.render('index', {user: req.user})
 })
 app.use('/auth', require('./controllers/authenticate'))
 app.use('/dump', require('./controllers/dump'))
+app.use('/schedule', require('./controllers/schedule'))
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

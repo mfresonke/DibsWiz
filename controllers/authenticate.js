@@ -7,7 +7,7 @@ const router = require('express').Router()
 const postLoginRedirect = '/'
 
 router.get('/', function (req, res) {
-  res.redirect('/')
+  res.redirect('/', {})
 })
 
 router.get('/register', function (req, res) {
