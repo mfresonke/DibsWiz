@@ -6,8 +6,8 @@ $(document).ready(function () {
   $('#pickadate-end').pickatime()
 
   //Button HTML
-  const phoneFormHTML = '<div class="input-group"><span class="input-group-addon glyphicon glyphicon-phone" id="basic-addon1"></span><input type="text" class="form-control bfh-phone" data-format="+1 (ddd) ddd-dddd"></div>'
-  const userFormHTML = '<div class="input-group"><span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span><input type="text" class="form-control"></div>'
+  const phoneFormHTML = '<div class="input-group"><span class="input-group-addon glyphicon glyphicon-phone" id="basic-addon1"></span><input name="memberPhoneNumbers" type="text" class="form-control bfh-phone" data-format="+1 (ddd) ddd-dddd"></div><br />'
+  const userFormHTML = '<div class="input-group"><span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span><input name="memberUsernames" type="text" class="form-control"></div><br />'
 
   // Phone Variables
   const memberInfoDiv = $('#memberInfoContainer')

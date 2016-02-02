@@ -5,7 +5,7 @@
       <div class="col-md-8" align="center">
         <h1>Create a Marston Meetup!</h1>
         <div class="input-group input-group-lg">
-          <span class="input-group-addon" id="basic-addon3">Meetup Name</span>
+          <span class="input-group-addon" id="basic-addon3">Name</span>
           <input name="meetupName" type="text" class="form-control" placeholder="e.g. Digital Design Meetup" aria-describedby="sizing-addon1">
         </div>
         <br />
@@ -15,29 +15,43 @@
     </div>
     <div class="row">
       <div class="col-lg-6" align="center">
-        <div class="form-group">
-          <h3>Member Information</h3>
-          <div id="memberInfoContainer"></div>
-          <br/>
-          <div class="btn-group btn-group-justified" role="group">
-            <div class="btn-group" role="group">
-              <button type="button" id="btnAddPhone" class="btn btn-default btn" name="submitType" value="once">
-                <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> Add Number
-              </button>
-            </div>
-            <div class="btn-group" role="group">
-              <button type="button" id="btnAddUser" class="btn btn-default btn" name="submitType" value="once">
-                <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add Username
-              </button>
-            </div>
+        <h3>Member Information</h3>
+        <!-- User Container that contains the logged in user. -->
+        <div class="input-group">
+          <span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span>
+          <input type="text" class="form-control" value="{{user.username}}" disabled>
+        </div>
+        <!-- Items are Dynamically Added to Below Container -->
+        <div id="memberInfoContainer">
+          <br />
+        </div>
+        <br/>
+        <div class="btn-group btn-group-justified" role="group">
+          <div class="btn-group" role="group">
+            <button type="button" id="btnAddPhone" class="btn btn-primary" name="submitType" value="once">
+              <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> Add Number
+            </button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button" id="btnAddUser" class="btn btn-info" name="submitType" value="once">
+              <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add Username
+            </button>
           </div>
         </div>
       </div>
       <div class="col-lg-6 text-center">
         <h3>What Day(s) Will Your Group Meet?</h3>
         <div class="btn-group" data-toggle="buttons">
-          {{#each daysOfWeek}}
-            <label class="btn btn-primary">
+          {{#each weekdays}}
+            <label class="btn btn-primary btn-lg">
+              <input type="checkbox" id="checkbox{{this}}" name="daysSelected" value="{{this}}">{{this}}
+            </label>
+          {{/each}}
+        </div>
+        <span>  </span>
+        <div class="btn-group" data-toggle="buttons">
+          {{#each weekends}}
+            <label class="btn btn-info btn-lg">
               <input type="checkbox" id="checkbox{{this}}" name="daysSelected" value="{{this}}">{{this}}
             </label>
           {{/each}}
@@ -47,19 +61,25 @@
         <br/>
         <h3>Choose an Ending Time</h3>
         <input id="pickadate-end" name="timeEnd" class="" type="text" placeholder="End Time" readonly="" aria-haspopup="true">
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <br />
+        <br />
+      </div>
+    </div>
+    <div class="row" align="center">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
         <div class="btn-group btn-group-justified" role="group">
           <div class="btn-group" role="group">
-            <button type="submit" class="btn btn-success btn-lg" name="submitType" value="once">Schedule Once</button>
+            <button type="submit" class="btn btn-primary btn-lg" name="submitType" value="once">Schedule Once</button>
           </div>
           <div class="btn-group" role="group">
-            <button type="submit" class="btn btn-primary btn-lg" name="submitType" value="weekly">Schedule Weekly</button>
+            <button type="submit" class="btn btn-info btn-lg" name="submitType" value="weekly">Schedule Weekly</button>
           </div>
         </div>
       </div>
+      <div class="col-md-3"></div>
+    </div>
   </form>
-  </div>
+</div>

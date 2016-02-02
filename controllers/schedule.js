@@ -12,7 +12,8 @@ const clientJS = path.join(components.publicJS, 'schedule.js')
 router.get('/', function (req, res) {
   res.render('schedule', {
     // Fun Stuff!
-    daysOfWeek: ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'],
+    weekends: ['Sun', 'Sat'],
+    weekdays: ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri'],
     // Boring Stuff
     user: req.user,
     activePage: {schedule: true},
@@ -22,12 +23,15 @@ router.get('/', function (req, res) {
 })
 
 router.post('/', function (req, res) {
-  console.log('Meetup Name: ' + req.body.meetupName)
-  console.log('Member Information: ' + req.body.memberInfo)
-  console.log('Days Selected: ' + req.body.daysSelected.toString())
-  console.log('Beginning Time Selected: ' + req.body.timeBegin)
-  console.log('End Time Selected: ' + req.body.timeEnd)
-  console.log('Submission Type: ' + req.body.submitType)
+  const meetupName = req.body.meetupName
+  const memberPhoneNumbers = req.body.memberPhoneNumbers
+  const memberUsernames = req.body.memberUsernames
+  const daysSelected = req.body.daysSelected
+  const timeBegin = req.body.timeBegin
+  const timeEnd = req.body.timeEnd
+  const submitType = req.body.submitType
+
+
 })
 
 module.exports = router
