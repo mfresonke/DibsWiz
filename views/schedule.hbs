@@ -43,7 +43,7 @@
         <div class="btn-group" data-toggle="buttons">
           {{#each weekdays}}
             <label class="btn btn-primary btn-lg">
-              <input type="checkbox" id="checkbox{{this}}" name="daysSelected" value="{{this}}">{{this}}
+              <input type="checkbox" id="checkbox{{this.day}}" name="daysSelected" value="{{this.day}}">{{this.disp}}
             </label>
           {{/each}}
         </div>
@@ -51,7 +51,7 @@
         <div class="btn-group" data-toggle="buttons">
           {{#each weekends}}
             <label class="btn btn-info btn-lg">
-              <input type="checkbox" id="checkbox{{this}}" name="daysSelected" value="{{this}}">{{this}}
+              <input type="checkbox" id="checkbox{{this.day}}" name="daysSelected" value="{{this.day}}">{{this.disp}}
             </label>
           {{/each}}
         </div>

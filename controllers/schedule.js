@@ -11,11 +11,20 @@ const awesomeCheckboxCSS = components.awesomeCheckboxCSS
 
 const clientJS = path.join(components.publicJS, 'schedule.js')
 
+// Used for displaying a day with embedded day num info
+function DispDay (display, dayNum) {
+  this.disp = display
+  this.day = dayNum
+}
+
 router.get('/', user.isAuthenticated, function (req, res) {
   res.render('schedule', {
     // Fun Stuff!
-    weekends: ['Sun', 'Sat'],
-    weekdays: ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri'],
+    weekends: [new DispDay('Sun', 0), new DispDay('Sat', 6)],
+    weekdays: [
+      new DispDay('Mon', 1), new DispDay('Tues', 2), new DispDay('Wed', 3),
+      new DispDay('Thurs', 4), new DispDay('Fri', 5)
+    ],
     // Boring Stuff
     user: req.user,
     activePage: {schedule: true},
@@ -26,20 +35,20 @@ router.get('/', user.isAuthenticated, function (req, res) {
 
 const minValidNameLen = 1
 
-function SubmittedMeetup (req) {
+function SubmittedMeetup (body) {
   this.isValid = false
 
   /* Perform Basic (Synchronous) Validation and Set Properties */
 
   // Meetup Name
-  const name = req.body.meetupName
+  const name = body.meetupName
   if (typeof name !== 'string' && name.length < minValidNameLen) {
     return
   }
   this.name = name
 
   // Member Usernames.
-  const usernames = req.body.memberUsernames
+  const usernames = body.memberUsernames
   // Check the case that the usernames are in an Array
   if (usernames instanceof Array) {
     // If so, no manip. is necessary. Directly assign them.
@@ -53,7 +62,7 @@ function SubmittedMeetup (req) {
   }
 
   // Member Phone Numbers.
-  const phoneNumbers = req.body.memberPhoneNumbers
+  const phoneNumbers = body.memberPhoneNumbers
   this.phoneNumbers = []
   if (phoneNumbers instanceof Array) {
     for (let phoneNumber of phoneNumbers) {
@@ -69,16 +78,35 @@ function SubmittedMeetup (req) {
       this.phoneNumbers.push(stdPhoneNum)
     }
   }
-  this.daysSelected = req.body.daysSelected
-  this.timeBegin = req.body.timeBegin
-  this.timeEnd = req.body.timeEnd
-  this.submitType = req.body.submitType
 
+  // Check that there is at least one username or phone.
+  if (this.usernames.length === 0 && this.phoneNumbers.length === 0) {
+    // Then this submission is not valid. Return.
+    return
+  }
+
+  // Begin Days Parse
+  const daysSelectedStrs = body.daysSelected
+  this.daysSelected = []
+  for (let dayStr of daysSelectedStrs) {
+    // Parse the day numbers into
+    const day = parseInt(dayStr, 10)
+    if (typeof day === 'number') {
+      this.daysSelected.push(day)
+    }
+  }
+  // Check that there is at least one day.
+  if (this.daysSelected === 0) {
+    return
+  }
+  this.timeBegin = body.timeBegin
+  this.timeEnd = body.timeEnd
+  this.submitType = body.submitType
 }
 
 router.post('/', user.isAuthenticated, function (req, res) {
   // Build the preview page and submit it ;)
-  res.send('Dummy Test Text!')
+  const meetup = new SubmittedMeetup(req.body)
 })
 
 module.exports = router
