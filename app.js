@@ -93,6 +93,10 @@ app.use('/bower_components', express.static(path.join(__dirname, 'bower_componen
 app.get('/', function (req, res, next) {
   res.render('index', {user: req.user})
 })
+
+// Export a logic location for redirecting purposes.
+exports.loginPath = '/auth/login'
+
 app.use('/auth', require('./controllers/authenticate'))
 app.use('/dump', require('./controllers/dump'))
 app.use('/schedule', require('./controllers/schedule'))

@@ -1,7 +1,7 @@
 'use strict'
 const passport = require('passport')
 const User = require('../models/User')
-const phoneUtil = require('../helpers/phoneUtil')
+const phone = require('../helpers/phone')
 const router = require('express').Router()
 
 const postLoginRedirect = '/'
@@ -19,7 +19,7 @@ router.post('/register', function (req, res, next) {
 
   const rawPhoneNumber = req.body.phoneNumber
 	// Find/Create Phone Number in DB.
-  phoneUtil.findOrCreate(rawPhoneNumber, function (err, phone) {
+  phone.findOrCreate(rawPhoneNumber, function (err, phone) {
     if (err) {
       registerError(err, next)
     }

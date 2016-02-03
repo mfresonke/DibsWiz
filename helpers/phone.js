@@ -57,7 +57,7 @@ const lengthOfUSNumber = '+14071234567'.length
  * @param {string} rawPhoneNum - The phone number to convert.
  * @return {string|null} String if phone number is valid, null if phone number is invalid.
  */
-const convertToStandard = function (rawPhoneNum) {
+exports.convertToStandard = function (rawPhoneNum) {
   const phoneUtil = phone.PhoneNumberUtil.getInstance()
   const phoneNumberObj = phoneUtil.parse(rawPhoneNum, 'US')
   if (phoneNumberObj === undefined) {
