@@ -3,52 +3,20 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Meetup = Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  creator: {
+  group: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Group',
     required: true
   },
-  library: {
-    type: String
-  },
-  memberPhones: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Phone',
+  time: {
+    type: Date,
     required: true
-  }],
-  meetupDays: [{
-    type: Number,
-    required: true,
-    min: 0,
-    max: 6
-  }],
-  startTime: {
-    hour: {
-      type: Number,
-      min: 0,
-      max: 23
-    }, min: {
-      type: Number,
-      min: 0,
-      max: 59
-    }
   },
-  endTime: {
-    hour: {
-      type: Number,
-      min: 0,
-      max: 23
-    }, min: {
-      type: Number,
-      min: 0,
-      max: 59
-    }
+  // How Represent Room??
+  repeatWeekly: {
+    type: Boolean,
+    default: false
   }
-
 })
 
 module.exports = mongoose.model('Meetup', Meetup)
