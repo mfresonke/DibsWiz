@@ -105,14 +105,22 @@
     this.increments = increments
   }
 
-  function Library (name, rooms, hours, reservationProps) {
-    const numArgs = 5
+  function Library (reference, name, rooms, hours, reservationProps) {
+    const numArgs = 6
     if (arguments.length !== numArgs) {
       throw new Error('Not Enough Arguments to Library.')
     }
+    this.reference = reference
+    this.name = name
+    this.rooms = rooms
+    this.hours = hours
+    this.reservationProps
   }
 
-  exports.marston = new Library(
+  const libs = []
+
+  const marston = new Library(
+    'marston',
     'Marston Science Library', [
       new Room('Argon', 'L201G', 6),
       new Room('Babbage', 'L115', 6, true, typeStandard, featAirMedia),
@@ -145,4 +153,14 @@
       new HoursOfOperation(6, new Time(10), new Time(18))
     ], new ReservationProperties(new Duration(2), new Duration(0, 30))
   )
+  libs.push(marston)
+
+  exports.all = libs
+  exports.findByReference = function (reference) {
+    for (let lib of libs) {
+      if (lib.reference === reference) {
+        return lib
+      }
+    }
+  }
 })(exports === undefined ? this.libraries = {} : exports)

@@ -1,7 +1,7 @@
 <div class="container">
 
 	<div class="page-header">
-		<h1>Registration form <small>A Bootstrap template showing a registration form with standard fields</small></h1>
+		<h1>Create an Account</h1>
 	</div>
 
 	<!-- Registration form - START -->
@@ -13,14 +13,23 @@
 					<div class="form-group">
 						<label for="username">Username</label>
 						<div class="input-group">
-							<input type="text" class="form-control" name="username" id="username" placeholder="Enter Username" required>
+							<input type="text" class="form-control" name="username" id="username"
+              placeholder="fruityPebbles64" required>
+							<span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+						</div>
+					</div>
+          <div class="form-group">
+						<label for="username">Nickname</label>
+						<div class="input-group">
+							<input type="text" class="form-control" name="nickname" id="nickname"
+              placeholder="Max" required>
 							<span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="InputEmail">Phone Number</label>
+						<label for="InputEmail">Cell Phone Number</label>
 						<div class="input-group">
-							<input type="tel" class="form-control" id="InputEmailFirst" name="phoneNumber" placeholder="Enter Phone Number" required>
+							<input type="tel" class="form-control" id="InputEmailFirst" name="phoneNumber" placeholder="(407) 123-1234" required>
 							<span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
 						</div>
 					</div>
@@ -34,16 +43,6 @@
 					<input type="submit" name="submit" id="submit" value="Submit" class="btn btn-info pull-right">
 				</div>
 			</form>
-			<div class="col-lg-5 col-md-push-1">
-				<div class="col-md-12">
-					<div class="alert alert-success">
-						<strong><span class="glyphicon glyphicon-ok"></span> Success! Message sent.</strong>
-					</div>
-					<div class="alert alert-danger">
-						<span class="glyphicon glyphicon-remove"></span><strong> Error! Please check all page inputs.</strong>
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 	<!-- Registration form - END -->

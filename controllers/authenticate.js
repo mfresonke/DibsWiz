@@ -4,7 +4,15 @@ const User = require('../models/User')
 const phone = require('../helpers/phone')
 const router = require('express').Router()
 
-const postLoginRedirect = '/'
+const postLoginRedirect = function (req, res) {
+  const preAuthURL = req.session.preAuthURL
+  if (preAuthURL) {
+    req.session.preAuthURL = null
+    res.redirect(preAuthURL)
+  } else {
+    res.redirect('/')
+  }
+}
 
 router.get('/', function (req, res) {
   res.redirect('/', {})
@@ -16,23 +24,22 @@ router.get('/register', function (req, res) {
 
 router.post('/register', function (req, res, next) {
   console.log('registering user')
-
+  const nickname = req.body.nickname
   const rawPhoneNumber = req.body.phoneNumber
-	// Find/Create Phone Number in DB.
-  phone.findOrCreate(rawPhoneNumber, function (err, phone) {
+  console.log('Nickname: ' + nickname + ', RawNum: ' + rawPhoneNumber)
+  // Create New User
+  User.register(new User({username: req.body.username}), req.body.password, function (err, user) {
     if (err) {
-      registerError(err, next)
+      return registerError(err, next)
     }
-    User.register(new User({
-      username: req.body.username,
-      phone: phone._id
-    }), req.body.password, function (err) {
-      if (err) {
-        return registerError(err, next)
-      }
-      console.log('user registered!')
+    console.log('user registered!')
 
-      res.redirect(postLoginRedirect)
+    // Find/Create Phone Number in DB.
+    phone.findOrCreate(user._id, rawPhoneNumber, nickname, function (err, phone) {
+      if (err) {
+        registerError(err, next)
+      }
+      postLoginRedirect(req, res)
     })
   })
 })
@@ -46,15 +53,11 @@ router.get('/login', function (req, res) {
   res.render('login', {user: req.user})
 })
 
+
+
 router.post('/login', passport.authenticate('local'), function (req, res) {
   // check if the user was trying to go somewhere before this.
-  const preAuthURL = req.session.preAuthURL
-  if (preAuthURL) {
-    req.session.preAuthURL = null
-    res.redirect(preAuthURL)
-  } else {
-    res.redirect('/')
-  }
+  postLoginRedirect(req, res)
 })
 
 router.get('/logout', function (req, res) {

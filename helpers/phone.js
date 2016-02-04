@@ -16,37 +16,38 @@ const Phone = require('../models/Phone')
 /**
  * Find a Phone Number, and Create It If It Doesn't Exist.
  *
- * @param {string} rawPhoneNum - The phone number we wish to search for.
+ * @param {string} rawPhoneNum - The phone number we wish to search for or create.
+ * @param {string} nickname - The User's Desired Nickname. Will override the current one if phone if it already exists.
  * @param {phoneCallback} phoneNumberCallback - A callback to run after phone number is found/created.
  */
-exports.findOrCreate = function (rawPhoneNum, phoneCallback) {
+exports.findOrCreate = function (ownerID, rawPhoneNum, nickname, phoneCallback) {
   const phoneNumber = convertToStandard(rawPhoneNum)
   // check that number is valid.
   if (!phoneNumber) {
     phoneCallback(new Error('Phone Number Invalid'), null)
     return
   }
-
-  // attempt to find the number in the db.
-  Phone.findOne({number: phoneNumber}, function (err, phone) {
-    if (err) {
-      throw new Error('Error occured when searching the DB for ' + phoneNumber)
-    }
-    // if a phone was found, simply pass it to the callback.
-    if (phone) {
-      phoneCallback(null, phone)
-      return
-    }
-    // if a phone number was not found, create a new Phone instance and save it to the DB.
-    phone = new Phone({number: phoneNumber})
-    phone.save(function (err, phone) {
+  // Update the Phone Obj If It Exists
+  Phone.findOneAndUpdate(
+    {number: phoneNumber},
+    // Updates the nickname, and adds an owner.
+    {nickname: nickname, owner: ownerID},
+    {new: true},
+    function (err, phone) {
       if (err) {
-        throw new Error('Error occured when saving ' + phoneNumber + ' to the DB.')
+        throw new Error('Error while executing update phone query')
       }
-      // success! Let's pass the newly created phone to the callback.
-      phoneCallback(null, phone)
-    })
-  })
+      if (phone) {
+        // We're done! Call the callback.
+        phoneCallback(err, phone)
+        return
+      }
+      // otherwise, create a new phone instance.
+      Phone.create({number: phoneNumber, nickname: nickname, owner: ownerID}, function (err, phone) {
+        phoneCallback(err, phone)
+      })
+    }
+  )
 }
 
 const lengthOfUSNumber = '+14071234567'.length
@@ -57,7 +58,7 @@ const lengthOfUSNumber = '+14071234567'.length
  * @param {string} rawPhoneNum - The phone number to convert.
  * @return {string|null} String if phone number is valid, null if phone number is invalid.
  */
-exports.convertToStandard = function (rawPhoneNum) {
+const convertToStandard = function (rawPhoneNum) {
   const phoneUtil = phone.PhoneNumberUtil.getInstance()
   const phoneNumberObj = phoneUtil.parse(rawPhoneNum, 'US')
   if (phoneNumberObj === undefined) {
@@ -71,3 +72,4 @@ exports.convertToStandard = function (rawPhoneNum) {
   }
   return phoneNumber
 }
+exports.convertToStandard = convertToStandard
