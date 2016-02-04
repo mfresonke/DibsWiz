@@ -47,7 +47,14 @@ router.get('/login', function (req, res) {
 })
 
 router.post('/login', passport.authenticate('local'), function (req, res) {
-  res.redirect('/')
+  // check if the user was trying to go somewhere before this.
+  const preAuthURL = req.session.preAuthURL
+  if (preAuthURL) {
+    req.session.preAuthURL = null
+    res.redirect(preAuthURL)
+  } else {
+    res.redirect('/')
+  }
 })
 
 router.get('/logout', function (req, res) {

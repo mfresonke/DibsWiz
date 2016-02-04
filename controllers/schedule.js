@@ -95,10 +95,12 @@ function SubmittedMeetup (body) {
       this.daysSelected.push(day)
     }
   }
-  // Check that there is at least one day.
+  // Check that there is at least one day selected.
   if (this.daysSelected === 0) {
     return
   }
+  console.log(body.timeBegin)
+  console.log(body.timeEnd)
   this.timeBegin = body.timeBegin
   this.timeEnd = body.timeEnd
   this.submitType = body.submitType
