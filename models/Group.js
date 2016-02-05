@@ -12,11 +12,10 @@ const Group = Schema({
     ref: 'User',
     required: true
   },
-  members: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Phone',
+  members: {
+    type: [{type: Schema.Types.ObjectId, ref: 'Phone'}],
     required: true
-  }]
+  }
 })
 
 module.exports = mongoose.model('Group', Group)

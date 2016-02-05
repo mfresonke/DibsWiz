@@ -3,9 +3,9 @@
 
   exports.sms = {
     requestReservation: {
-      msg: "Hello there! It's your turn to book <room_name> at <book_time> for your <group>. Please reply when you have completed the booking!",
+      msg: "Hello there! It's your turn to book <room_name> at <book_time> for your <group>. Please reply 'COMPLETED' when you have completed the booking!",
       validReplies: [
-        'confirmed', 'room not available', 'already booked room', "I'm busy", "don't want to"
+        'confirmed', 'room not available', 'remind me later', 'already booked room', "I'm busy", "don't want to"
       ]
     }
   }
@@ -55,20 +55,16 @@
   const typeStandard = 'Standard'
   const typeReading = 'Reading'
   const featAirMedia = 'AirMedia'
+  const featMonitor = 'Monitor'
 
   function Room (name, room, cap, hasMonitor, type, features) {
     this.name = name
-    this.room = room
-    this.cap = cap
+    this.number = room
+    this.capacity = cap
 
-    this.hasMonitor = hasMonitor
-    if (!hasMonitor) {
-      this.hasMonitor = false
-    }
-
-    this.type = type
+    this.style = type
     if (!type) {
-      this.type = typeStandard
+      this.style = typeStandard
     }
 
     if (features instanceof Array) {
@@ -77,6 +73,10 @@
       this.features = [features]
     } else {
       this.features = []
+    }
+    // Add the monitor as a feature
+    if (hasMonitor) {
+      this.features.push(featMonitor)
     }
   }
 
@@ -101,12 +101,12 @@
         throw new Error('Invalid type passed to booking properties.')
       }
     }
-    this.length = length
+    this.lengths = length
     this.increments = increments
   }
 
-  function Library (reference, name, rooms, hours, reservationProps) {
-    const numArgs = 6
+  function Library (reference, name, rooms, hours, reservation) {
+    const numArgs = 5
     if (arguments.length !== numArgs) {
       throw new Error('Not Enough Arguments to Library.')
     }
@@ -114,7 +114,7 @@
     this.name = name
     this.rooms = rooms
     this.hours = hours
-    this.reservationProps
+    this.reservation = reservation
   }
 
   const libs = []
