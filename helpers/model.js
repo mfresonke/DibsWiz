@@ -2,7 +2,7 @@
 
 exports.duration = {
   minutes: {type: Number, min: 0, max: 59, required: true},
-  hours: {type: Number, min: 0, required: true}
+  hours: {type: Number, min: 0, max: 23, required: true}
 }
 
 exports.time = {

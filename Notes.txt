@@ -1,0 +1,12 @@
+-- User states
+  - Available
+  - Booked (with ID)
+  - Not Available
+
+-- Going Through Meet Ups Scheduling Texts to be Sent --
+  -> Have Group Filled Which Has User IDs
+  -> Have Reservations Which Has Users That Have Filled Them (Along With Some Potentially Without)
+
+  Problem: I'm In Meetup X, and need to know if user Y has already been scheduled for Another Meet Up.
+  Potential Solutions:
+    - Store Scheduled Information in User

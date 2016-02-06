@@ -1,7 +1,11 @@
 'use strict'
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const duration = require('../helpers/model').duration
+
+const duration = {
+  minutes: {type: Number, min: 0, max: 59, required: true},
+  hours: {type: Number, min: 0, max: 23, default: 0}
+}
 
 const Meetup = new Schema({
   group: {
@@ -9,7 +13,7 @@ const Meetup = new Schema({
     ref: 'Group',
     required: true
   },
-  start: {
+  time: {
     type: Date,
     required: true
   },
@@ -20,19 +24,10 @@ const Meetup = new Schema({
     required: true
   },
   length: {type: duration, required: true},
-  library: {
-    type: Schema.Types.ObjectId,
-    ref: 'Library',
-    required: true
-  },
   // Refers to the room field in library
   room: {
     type: Schema.Types.ObjectId,
     required: true
-  },
-  repeatWeekly: {
-    type: Boolean,
-    default: false
   }
 }, {timestamps: true})
 

@@ -2,6 +2,17 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const meetTime = {
+  hour: {type: Number, min: 0, max: 23, required: true},
+  minute: {type: Number, min: 0, max: 59, default: 0}
+}
+
+const weeklyMeetup = {
+  weekday: {type: Number, min: 0, max: 6, required: true},
+  start: meetTime,
+  end: meetTime
+}
+
 const Group = Schema({
   name: {
     type: String,
@@ -15,7 +26,8 @@ const Group = Schema({
   members: {
     type: [{type: Schema.Types.ObjectId, ref: 'Phone'}],
     required: true
-  }
+  },
+  weeklyMeetups: [weeklyMeetup]
 })
 
 module.exports = mongoose.model('Group', Group)
