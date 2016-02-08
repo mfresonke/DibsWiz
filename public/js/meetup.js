@@ -23,6 +23,8 @@ $(document).ready(function () {
     inputDisplayName.val('')
     inputPhoneNumber.val('')
     inputUsername.val('')
+    $('.alert-danger').addClass('hidden')
+    $('#divUsername').removeClass('has-error')
   }
 
   const newUserRep = function (displayName, username) {
@@ -166,6 +168,8 @@ $(document).ready(function () {
         clearFields()
         return hideModal(modalAddByUsername)
       } else {
+        $('.alert-danger').removeClass('hidden')
+        $('#divUsername').addClass('has-error')
         console.log('Could Not Find User ' + username)
       }
     })

@@ -19,7 +19,8 @@ exports.publicModules = publicModules
 
 exports.awesomeCheckboxCSS = path.join(publicCSS, 'awesome-bootstrap-checkbox.min.css')
 
-exports.bootstrapValidatorJS = path.join(publicCSS, 'validator.min.js')
+const bootstrapValidatorDir = path.join(publicBC, 'bootstrap-validator/dist')
+exports.bootstrapValidatorJS = path.join(bootstrapValidatorDir, 'validator.min.js')
 
 const formhelpersDir = path.join(publicBC, 'bootstrap-formhelpers/dist')
 exports.formHelpers = {
