@@ -6,7 +6,7 @@ const Phone = require('../models/Phone')
 /* Static Helper Methods */
 
 /**
- * Callback for recieving a phone number.
+ * Callback for recieving a found or created phone number.
  *
  * @callback phoneCallback
  * @param {Error} err - error if error occured.
@@ -20,7 +20,7 @@ const Phone = require('../models/Phone')
  * @param {string} nickname - The User's Desired Nickname. Will override the current one if phone if it already exists.
  * @param {phoneCallback} phoneNumberCallback - A callback to run after phone number is found/created.
  */
-exports.findOrCreate = function (ownerID, rawPhoneNum, nickname, phoneCallback) {
+exports.findOrCreate = function (userID, rawPhoneNum, phoneCallback) {
   const phoneNumber = convertToStandard(rawPhoneNum)
   // check that number is valid.
   if (!phoneNumber) {
@@ -31,7 +31,7 @@ exports.findOrCreate = function (ownerID, rawPhoneNum, nickname, phoneCallback) 
   Phone.findOneAndUpdate(
     {number: phoneNumber},
     // Updates the nickname, and adds an owner.
-    {nickname: nickname, owner: ownerID},
+    {user: userID},
     {new: true},
     function (err, phone) {
       if (err) {
@@ -43,7 +43,7 @@ exports.findOrCreate = function (ownerID, rawPhoneNum, nickname, phoneCallback) 
         return
       }
       // otherwise, create a new phone instance.
-      Phone.create({number: phoneNumber, nickname: nickname, owner: ownerID}, function (err, phone) {
+      Phone.create({number: phoneNumber, user: userID}, function (err, phone) {
         phoneCallback(err, phone)
       })
     }
@@ -73,3 +73,5 @@ const convertToStandard = function (rawPhoneNum) {
   return phoneNumber
 }
 exports.convertToStandard = convertToStandard
+
+// If I need to search phone and populate, steal it from member.js

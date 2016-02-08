@@ -1,4 +1,4 @@
-input[type=text], input[type=password], input[type=email], input[type=date], input[type=number], input[type=search], textarea {
+/*input[type=text], input[type=password], input[type=email], input[type=date], input[type=number], input[type=search], textarea {
     border: 3px solid #cccccc;
     padding: .6em 1em;
     font-weight: 200;
@@ -6,7 +6,7 @@ input[type=text], input[type=password], input[type=email], input[type=date], inp
     -webkit-appearance: none;
     box-shadow: none;
     box-sizing: border-box;
-}
+}*/
 
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;

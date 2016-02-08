@@ -94,12 +94,11 @@ app.get('/', function (req, res, next) {
   res.render('index', {user: req.user})
 })
 
-// Export a logic location for redirecting purposes.
-exports.loginPath = '/auth/login'
-
 app.use('/auth', require('./controllers/authenticate'))
 app.use('/dump', require('./controllers/dump'))
 app.use('/schedule', require('./controllers/schedule'))
+app.use('/meetup', require('./controllers/meetup'))
+app.use('/member', require('./controllers/member'))
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -125,7 +124,7 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
-  res.status(err.status || 500)
+  res.status = err.status || 500
   res.render('error', {
     message: err.message,
     error: {}

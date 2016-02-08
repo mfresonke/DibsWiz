@@ -13,14 +13,19 @@ const Meetup = new Schema({
     ref: 'Group',
     required: true
   },
-  time: {
+  start: {
     type: Date,
     required: true
   },
-  reservations: {type: [{
-    time: {type: Date, required: true},
-    heldBy: {type: Schema.Types.ObjectId, ref: 'User'} // if this is not assigned, then there is currently nobody holding it.
-  }],
+  end: {
+    type: Date,
+    required: true
+  },
+  reservations: {
+    type: [{
+      time: {type: Date, required: true},
+      heldBy: {type: Schema.Types.ObjectId, ref: 'User'} // if this is not assigned, then there is currently nobody holding it.
+    }],
     required: true
   },
   length: {type: duration, required: true},

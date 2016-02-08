@@ -13,15 +13,10 @@ const busyStates = ['Booked', 'Not Available']
 exports.busyStates = busyStates
 
 const Phone = Schema({
-  // Name associated with number. Specified by the person putting in the phone num,
-  // or new user registering.
-  nickname: {
-    type: String,
-    required: true
-  },
-  // Username associated with number.
-  owner: {
+  // User associated with number.
+  user: {
     type: Schema.Types.ObjectId,
+    ref: 'User',
     // A number may not have an owner.
     required: false,
     // However, any person can have only one number assoicated.
@@ -40,10 +35,11 @@ const Phone = Schema({
     },
     until: {
       type: Date,
+      // We make a busy until date some in time in the past by default to simplify querying.
       default: function () { return new Date(0) },
       required: true
     }
   }
-})
+}, {timestamps: true})
 
 module.exports = mongoose.model('Phone', Phone)

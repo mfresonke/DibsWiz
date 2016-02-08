@@ -10,3 +10,10 @@
   Problem: I'm In Meetup X, and need to know if user Y has already been scheduled for Another Meet Up.
   Potential Solutions:
     - Store Scheduled Information in User
+
+-- Things to Implement
+  - Names back into user
+  - Nicknames now part of group.
+
+-- I Have a Time and Day of Week. I want to find all rooms available.
+  - Find all Meetups that are within that time.

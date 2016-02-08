@@ -24,7 +24,11 @@ const Group = Schema({
     required: true
   },
   members: {
-    type: [{type: Schema.Types.ObjectId, ref: 'Phone'}],
+    type: [{
+      phone: {type: Schema.Types.ObjectId, ref: 'Phone'},
+      // Used if phone has no name associated.
+      nickname: String
+    }],
     required: true
   },
   weeklyMeetups: [weeklyMeetup]

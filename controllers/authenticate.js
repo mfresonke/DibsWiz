@@ -24,22 +24,28 @@ router.get('/register', function (req, res) {
 
 router.post('/register', function (req, res, next) {
   console.log('registering user')
-  const nickname = req.body.nickname
+  const displayName = req.body.displayName
   const rawPhoneNumber = req.body.phoneNumber
-  console.log('Nickname: ' + nickname + ', RawNum: ' + rawPhoneNumber)
+  console.log('Nickname: ' + displayName + ', RawNum: ' + rawPhoneNumber)
   // Create New User
-  User.register(new User({username: req.body.username}), req.body.password, function (err, user) {
+  User.register(new User({username: req.body.username, name: displayName}), req.body.password, function (err, user) {
     if (err) {
       return registerError(err, next)
     }
     console.log('user registered!')
 
     // Find/Create Phone Number in DB.
-    phone.findOrCreate(user._id, rawPhoneNumber, nickname, function (err, phone) {
+    phone.findOrCreate(user._id, rawPhoneNumber, function (err, phone) {
       if (err) {
         registerError(err, next)
+        return
       }
-      postLoginRedirect(req, res)
+      req.logIn(user, function (err) {
+        if (err) {
+          console.log('Error Logging In User.')
+        }
+        postLoginRedirect(req, res)
+      })
     })
   })
 })
