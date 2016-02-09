@@ -13,7 +13,7 @@ router.route('/new')
     res.render('new-meetup', {
       // Data for template goes here.
       user: req.user,
-      scripts: [formHelpers.js, bootstrapValidatorJS, clientJS],
+      scripts: [formHelpers.js, clientJS],
       stylesheets: [formHelpers.css]
     })
   })

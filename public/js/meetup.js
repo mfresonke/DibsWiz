@@ -10,10 +10,11 @@ $(document).ready(function () {
   const btnAddUserByUsername = $('#btnAddUserByUsername')
   const modalAddByUsername = $('#modalAddByUsername')
   const inputUsername = $('#inputUsername')
-
+  // Other Elements
   const ctrMembers = $('#ctrMembers')
 
   const lookupDisplayNameURL = '/member/lookup'
+  const formhelpersURL = '/bower_components/bootstrap-formhelpers/dist/js/bootstrap-formhelpers.min.js'
 
   const hideModal = function (modal) {
     modal.modal('hide')
@@ -146,6 +147,8 @@ $(document).ready(function () {
     }
   }
 
+  /* Button Click Handlers */
+
   btnAddUserByNum.click(function () {
     const displayName = inputDisplayName.val()
     const user = new User(displayName, inputPhoneNumber.val())
@@ -173,5 +176,14 @@ $(document).ready(function () {
         console.log('Could Not Find User ' + username)
       }
     })
+  })
+
+  /* Modal Show Handlers */
+  modalAddByCell.on('shown.bs.modal', function (e) {
+    // load the cell helper script
+    // $.getScript(formhelpersURL)
+  })
+  modalAddByUsername.on('hidden.bs.modal', function (e) {
+  // do something...
   })
 })
