@@ -34,7 +34,7 @@
       <!-- The User Themselves, as an example. -->
       <div id="userRep" class="input-group" style="padding: 10px; padding-left: 30px;">
         <span class="input-group-addon glyphicon glyphicon-user"></span>
-        <input type="text" class="form-control" value="{{user.name}}" disabled />
+        <input type="text" class="form-control" name="ignore" value="{{user.name}}" disabled />
         <span class="input-group-addon" id="usernameSubtext">{{user.username}}</span>
         <span class="input-group-btn">
           <button class="btn btn-danger disabled" type="button">
@@ -44,7 +44,7 @@
       </div>
       <div id="newUserRep" class="input-group hidden" style="padding: 10px; padding-left: 30px;">
         <span class="input-group-addon glyphicon glyphicon-phone"></span>
-        <input type="text" class="form-control" value="Naddya" required />
+        <input type="text" class="form-control" name="ignore" value="Naddya" required />
         <span class="input-group-addon" id="phoneSubtext">(407) 111-1111</span>
         <span class="input-group-btn">
           <button class="btn btn-danger" type="button">
@@ -68,58 +68,58 @@
           </button>
         </div>
       </div>
-    </form>
-  </div>
-  <!-- Add Cell Modal -->
-  <div class="modal fade" id="modalAddByCell" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Add User</h4>
-        </div>
-        <div class="modal-body">
-          <div class="input-group input-group">
-            <span class="input-group-addon glyphicon glyphicon-font"></span>
-            <input id="inputDisplayName" type="text" class="form-control" required placeholder="Display Name">
-          </div>
-          <br/>
-          <div class="input-group">
-            <span class="input-group-addon glyphicon glyphicon-phone" id="basic-addon1"></span>
-            <input id="inputPhoneNumber" type="tel" class="form-control bfh-phone" data-format="+1 (ddd) ddd-dddd">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button id="btnAddUserByNumber" type="button" class="btn btn-primary">Add User</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Add Username Modal -->
-  <div class="modal fade" id="modalAddByUsername" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Add User</h4>
-          </div>
-          <div class="modal-body">
-            <div class="alert alert-danger hidden" role="alert">User Not Found!</div>
-            <div id="divUsername" class="input-group">
-              <span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span>
-              <input id="inputUsername" type="text" class="form-control" required placeholder="Username">
+      <!-- Add Cell Modal -->
+      <div class="modal fade" id="modalAddByCell" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Add User</h4>
             </div>
-
+            <div class="modal-body">
+              <div class="input-group input-group">
+                <span class="input-group-addon glyphicon glyphicon-font"></span>
+                <input id="inputDisplayName" type="text" class="form-control" required placeholder="Display Name">
+              </div>
+              <br/>
+              <div class="input-group">
+                <span class="input-group-addon glyphicon glyphicon-phone" id="basic-addon1"></span>
+                <input id="inputPhoneNumber" type="tel" class="form-control bfh-phone" data-format="+1 (ddd) ddd-dddd">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button id="btnAddUserByNumber" type="button" class="btn btn-primary">Add User</button>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="btnAddUserByUsername" type="button" class="btn btn-primary">Add User</button>
-          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="row" align="center">
-    <button class="btn btn-lg btn-default">Create</button>
+      <!-- Add Username Modal -->
+      <div class="modal fade" id="modalAddByUsername" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Add User</h4>
+            </div>
+            <div class="modal-body">
+              <div class="alert alert-danger hidden" role="alert">User Not Found!</div>
+              <div id="divUsername" class="input-group">
+                <span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span>
+                <input id="inputUsername" type="text" class="form-control" required placeholder="Username">
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button id="btnAddUserByUsername" type="button" class="btn btn-primary">Add User</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" align="center">
+        <button class="btn btn-lg btn-default">Create</button>
+      </div>
+    </form>
   </div>
 </div>
