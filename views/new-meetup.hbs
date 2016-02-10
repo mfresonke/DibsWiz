@@ -77,12 +77,13 @@
               <h4 class="modal-title" id="myModalLabel">Add User</h4>
             </div>
             <div class="modal-body">
+              <div class="alert alert-danger hidden" role="alert">Please Input A Valid Number!</div>
               <div class="input-group input-group">
                 <span class="input-group-addon glyphicon glyphicon-font"></span>
-                <input id="inputDisplayName" type="text" class="form-control" required placeholder="Display Name">
+                <input id="inputDisplayName" type="text" class="form-control" placeholder="Display Name">
               </div>
               <br/>
-              <div class="input-group">
+              <div id="divPhoneNumber" class="input-group">
                 <span class="input-group-addon glyphicon glyphicon-phone" id="basic-addon1"></span>
                 <input id="inputPhoneNumber" type="tel" class="form-control bfh-phone" data-format="+1 (ddd) ddd-dddd">
               </div>
@@ -106,9 +107,8 @@
               <div class="alert alert-danger hidden" role="alert">User Not Found!</div>
               <div id="divUsername" class="input-group">
                 <span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span>
-                <input id="inputUsername" type="text" class="form-control" required placeholder="Username">
+                <input id="inputUsername" type="text" class="form-control" placeholder="Username">
               </div>
-
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

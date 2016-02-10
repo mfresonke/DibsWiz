@@ -14,7 +14,7 @@ $(document).ready(function () {
   const ctrMembers = $('#ctrMembers')
 
   const lookupDisplayNameURL = '/member/lookup'
-  const formhelpersURL = '/bower_components/bootstrap-formhelpers/dist/js/bootstrap-formhelpers.min.js'
+  // const formhelpersURL = '/bower_components/bootstrap-formhelpers/dist/js/bootstrap-formhelpers.min.js'
 
   const hideModal = function (modal) {
     modal.modal('hide')
@@ -26,6 +26,19 @@ $(document).ready(function () {
     inputUsername.val('')
     $('.alert-danger').addClass('hidden')
     $('#divUsername').removeClass('has-error')
+    $('#divPhoneNumber').removeClass('has-error')
+  }
+
+  const addToList = function (user) {
+    const displayName = user.displayName
+    if (!displayName) {
+      throw new Error('Error. No valid display name in user.')
+    }
+    if (user.username) {
+      newUserRep(displayName, user.username)
+    } else if (user.phoneNumber) {
+      newPhoneRep(displayName, user.phoneNumber)
+    }
   }
 
   const newUserRep = function (displayName, username) {
@@ -82,98 +95,65 @@ $(document).ready(function () {
     ctrMembers.append($(hiddenForm))
   }
 
-  function User (dispNameOrUsername, phoneNum) {
-    if (arguments.length === 1) {
-      // This means we were just passed a username
-      this.username = dispNameOrUsername
-    }
-    if (arguments.length === 2) {
-      this.displayName = dispNameOrUsername
-      this.phoneNumber = phoneNum
-    }
-  }
-
-  // Takes callback of type function(userFound(boolean)). Sets data to object.
-  User.prototype.fillFromServer = function (callback) {
-    // Check if we have already recieved the appropriate info.
-    if (this.displayName && this.username) {
-      return callback(true)
-    }
-    // else query server for their display name
-    const payload = {
-      username: this.username,
-      phoneNumber: this.phoneNumber
-    }
-    const user = this
+  // Checks if user already exists based on information.
+  // callback is of form callback = function(user)
+  // Is guaranteed to send back a user of some form.
+  const checkUser = function (user, callback) {
+    // Query the Server to see if user already exists.
     $.post({
       url: lookupDisplayNameURL,
-      data: payload,
+      data: user,
       success: function (data, status, rand) {
         if (!data) {
-          console.log('Could Not Recieve Username, or user does not exist.')
-          return callback(false)
+          console.log('User does not exist on server, but is valid. Sending back original user.')
+          return callback(user)
         }
-        // Set the username, whether we recieved it or not.
-        if (data.username) {
-          user.username = data.username
-        } else {
-          // Set it null since the server did not confirm our request
-          user.username = null
+        // If an already-valid user was found,
+        if (data.user) {
+          // overwrite the user object with the found user.
+          user = data.user
+          // Otherwise, check if any of the data was invalid.
+        } else if (data.invalid) {
+          // If so, erase that the invalid data.
+          user[data.invalid] = null
         }
-
-        if (data.displayName) {
-          user.displayName = data.displayName
-          return callback(true)
-        }
-        throw new Error('An Error occurred while querying server.')
+        return callback(user)
       }
     })
-  }
-
-  // Will only return true after a fillFromServer call!
-  User.prototype.isCurrentUser = function () {
-    if (this.username && this.displayName) {
-      return true
-    }
-    return false
-  }
-
-  User.prototype.addToList = function () {
-    // Now we need to check if they are a current user, or a new one to add.
-    if (this.isCurrentUser()) {
-      newUserRep(this.displayName, this.username)
-    } else {
-      newPhoneRep(this.displayName, this.phoneNumber)
-    }
   }
 
   /* Button Click Handlers */
 
   btnAddUserByNum.click(function () {
-    const displayName = inputDisplayName.val()
-    const user = new User(displayName, inputPhoneNumber.val())
-    user.fillFromServer(function (foundUser) {
-      if (!foundUser) {
-        // console.log('Could Not Find User ' + displayName)
+    // Create New User Object Based on Fields
+    const user = {
+      displayName: inputDisplayName.val(),
+      phoneNumber: inputPhoneNumber.val()
+    }
+    checkUser(user, function (user) {
+      if (user.phoneNumber) {
+        addToList(user)
+        clearFields()
+        hideModal(modalAddByCell)
+      } else {
+        $('#divPhoneNumber').addClass('has-error')
+        $('.alert-danger').removeClass('hidden')
       }
-      user.addToList()
-      clearFields()
-      return hideModal(modalAddByCell)
     })
   })
 
   btnAddUserByUsername.click(function () {
-    const username = inputUsername.val()
-    const user = new User(username)
-    user.fillFromServer(function (foundUser) {
-      if (foundUser) {
-        user.addToList()
+    const user = {
+      username: inputUsername.val()
+    }
+    checkUser(user, function (user) {
+      if (user.username) {
+        addToList(user)
         clearFields()
-        return hideModal(modalAddByUsername)
+        hideModal(modalAddByUsername)
       } else {
         $('.alert-danger').removeClass('hidden')
         $('#divUsername').addClass('has-error')
-        console.log('Could Not Find User ' + username)
       }
     })
   })

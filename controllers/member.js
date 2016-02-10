@@ -18,11 +18,14 @@ router.post('/lookup', function (req, res, next) {
       console.log(user)
       // If no user was found
       if (!user) {
-        return res.sendStatus(204)
+        return res.json({invalid: 'username'})
       }
+      // otherwise, we found the user. let's send it back!
       res.json({
-        username: user.username,
-        displayName: user.name
+        user: {
+          username: user.username,
+          displayName: user.name
+        }
       })
     })
   } else if (phoneNumber) {
@@ -32,7 +35,7 @@ router.post('/lookup', function (req, res, next) {
     // If the phone number was bad,
     if (!normPhoneNumber) {
       console.log('Failed To Normalize Phone Number ' + phoneNumber)
-      return res.sendStatus(204)
+      return res.json({invalid: 'phoneNumber'})
     }
     Phone
       .findOne({number: normPhoneNumber})
@@ -44,14 +47,19 @@ router.post('/lookup', function (req, res, next) {
         }
         if (!phone) {
           console.log('Could not find phone ' + phoneNumber)
-
+          // Send a blank msg back with OK status, since this is not an error.
           return res.sendStatus(204)
         }
+        // otherwise, send back the valid user.
         res.json({
-          username: phone.user.username,
-          displayName: phone.user.name
+          user: {
+            username: phone.user.username,
+            displayName: phone.user.name
+          }
         })
       })
+  } else {
+    res.sendStatus(400)
   }
 })
 

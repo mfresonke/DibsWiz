@@ -60,8 +60,14 @@ const lengthOfUSNumber = '+14071234567'.length
  */
 const convertToStandard = function (rawPhoneNum) {
   const phoneUtil = phone.PhoneNumberUtil.getInstance()
-  const phoneNumberObj = phoneUtil.parse(rawPhoneNum, 'US')
-  if (phoneNumberObj === undefined) {
+  let phoneNumberObj = null
+  try {
+    phoneNumberObj = phoneUtil.parse(rawPhoneNum, 'US')
+  } catch (e) {
+    console.log('Phone normalization threw an exception. WTF?')
+  }
+
+  if (!phoneNumberObj) {
     // phone number could not be parsed. Not a valid phone number.
     return null
   }
