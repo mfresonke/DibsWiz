@@ -29,7 +29,7 @@ router.post('/lookup', function (req, res, next) {
       })
     })
   } else if (phoneNumber) {
-    console.log('Detected Phone Number')
+    console.log('Detected Phone Number ' + phoneNumber)
     const normPhoneNumber = phone.convertToStandard(phoneNumber)
     console.log('Normalized Number: ' + normPhoneNumber)
     // If the phone number was bad,
