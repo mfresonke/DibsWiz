@@ -80,4 +80,10 @@ const convertToStandard = function (rawPhoneNum) {
 }
 exports.convertToStandard = convertToStandard
 
+// finds the phone associated with the given userID. Guaranteed to find
+// a phone, as a user must be associated with a phone.
+exports.findFromUserID = function (userID, callback) {
+  
+}
+
 // If I need to search phone and populate, steal it from member.js

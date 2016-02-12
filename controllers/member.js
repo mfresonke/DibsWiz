@@ -8,14 +8,12 @@ const phone = require('../helpers/phone')
 router.post('/lookup', function (req, res, next) {
   const username = req.body.username
   const phoneNumber = req.body.phoneNumber
-  console.log(req.body)
   if (username) {
     User.findOne({username: username}, function (err, user) {
       if (err) {
         console.log(err)
         throw new Error('There was an error looking up username: ' + username)
       }
-      console.log(user)
       // If no user was found
       if (!user) {
         return res.json({invalid: 'username'})
@@ -29,9 +27,7 @@ router.post('/lookup', function (req, res, next) {
       })
     })
   } else if (phoneNumber) {
-    console.log('Detected Phone Number ' + phoneNumber)
     const normPhoneNumber = phone.convertToStandard(phoneNumber)
-    console.log('Normalized Number: ' + normPhoneNumber)
     // If the phone number was bad,
     if (!normPhoneNumber) {
       console.log('Failed To Normalize Phone Number ' + phoneNumber)
@@ -46,7 +42,6 @@ router.post('/lookup', function (req, res, next) {
           return next(new Error('There was an error looking up phoneNumber: ' + phoneNumber))
         }
         if (!phone) {
-          console.log('Could not find phone ' + phoneNumber)
           // Send a blank msg back with OK status, since this is not an error.
           return res.sendStatus(204)
         }

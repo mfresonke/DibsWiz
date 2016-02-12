@@ -1,7 +1,6 @@
 'use strict'
 
-const app = require('../app')
-const loginPath = app.loginPath
+const loginPath = '/auth/login'
 
 exports.isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) {

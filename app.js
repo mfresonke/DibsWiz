@@ -13,6 +13,7 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const hbs = require('hbs')
 const components = require('./helpers/components')
+const user = require('./helpers/user')
 
 const app = express()
 
@@ -97,8 +98,8 @@ app.get('/', function (req, res, next) {
 app.use('/auth', require('./controllers/authenticate'))
 app.use('/dump', require('./controllers/dump'))
 app.use('/schedule', require('./controllers/schedule'))
-app.use('/meetup', require('./controllers/meetup'))
-app.use('/member', require('./controllers/member'))
+app.use('/meetup', user.isAuthenticated, require('./controllers/meetup'))
+app.use('/member', user.isAuthenticated, require('./controllers/member'))
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

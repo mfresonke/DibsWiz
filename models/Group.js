@@ -13,19 +13,22 @@ const weeklyMeetup = {
   end: meetTime
 }
 
+const userRole = 'user'
+
+const roles = [
+  'admin',
+  userRole
+]
+
 const Group = Schema({
   name: {
     type: String,
     required: true
   },
-  creator: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
   members: {
     type: [{
-      phone: {type: Schema.Types.ObjectId, ref: 'Phone'},
+      phone: {type: Schema.Types.ObjectId, ref: 'Phone', required: true},
+      role: {type: String, enum: roles, required: true, default: userRole},
       // Used if phone has no name associated.
       nickname: String
     }],
