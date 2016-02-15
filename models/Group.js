@@ -13,11 +13,11 @@ const weeklyMeetup = {
   end: meetTime
 }
 
-const userRole = 'user'
+const roleParticipant = 'participant'
 
 const roles = [
-  'admin',
-  userRole
+  'admin', // have full administrative rights. Can delete group.
+  roleParticipant // basic role. Has no rights other than themselves.
 ]
 
 const Group = Schema({
@@ -28,8 +28,9 @@ const Group = Schema({
   members: {
     type: [{
       phone: {type: Schema.Types.ObjectId, ref: 'Phone', required: true},
-      role: {type: String, enum: roles, required: true, default: userRole},
-      // Used if phone has no name associated.
+      role: {type: String, enum: roles, required: true, default: roleParticipant},
+      // Used primarily phone has no name associated.
+      // However, will always be used over User nickname if present.
       nickname: String
     }],
     required: true

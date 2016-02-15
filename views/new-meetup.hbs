@@ -8,20 +8,20 @@
   </div>
   <div class="col-md-6">
     <h2>Current Groups</h2>
-    <div class="list-group">
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">List group item heading</h4>
-        <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">List group item heading</h4>
-        <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">List group item heading</h4>
-        <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-      </a>
-    </div>
+    {{#if groups}}
+      <div class="list-group">
+        {{#each groups}}
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">{{this.name}}</h4>
+          <p class="list-group-item-text">Group Has {{this.members.length}} members, with {{this.weeklyMeetups.length}} weekly meetups!</p>
+        </a>
+        {{/each}}
+      </div>
+    {{else}}
+      <!-- Render No Current Groups Text -->
+      <h3>No Current Groups! Create one! 😬</h3>
+    {{/if}}
+
   </div>
   <div class="col-md-6">
     <h2>Create New Group</h2>

@@ -1,6 +1,7 @@
 'use strict'
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const phone = require('../helpers/phone')
 
 // There are Three Possible User states
 //  - Available
@@ -17,8 +18,7 @@ const Phone = Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    // A number may not have an owner.
-    required: false,
+    // A number may not have an owner,
     // However, any person can have only one number assoicated.
     unique: true
   },
@@ -26,11 +26,19 @@ const Phone = Schema({
   number: {
     type: String,
     required: true,
+    validate: {
+      validator: function (num) {
+        // make sure the number is in standard form
+        return num === phone.convertToStandard(num)
+      }
+    },
     unique: true
   },
   busy: {
     reason: {
       type: String,
+      required: true,
+      default: 'Not Available',
       enum: busyStates
     },
     until: {

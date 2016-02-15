@@ -84,13 +84,13 @@ $(document).ready(function () {
     button.removeClass('disabled')
     // Set Display Vals Properly
     newUserRep.find('input')
-            .attr('name', 'phones')
+            .attr('name', 'phoneNames')
             .val(displayName)
 
     // Create a Hidden Form Element to Transfer Add'tl data
     const hiddenForm = $('<input>')
                           .attr('type', 'hidden')
-                          .attr('name', 'phone-numbers')
+                          .attr('name', 'phoneNumbers')
                           .val(phoneNumber)
     // Add an OnClick to Remove the Element
     button.click(function () {
