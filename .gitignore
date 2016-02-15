@@ -1,5 +1,5 @@
 # Manually Minified Public Stuff
-public/*.min.*
+*.min.*
 
 *.DS_Store
 # Logs
