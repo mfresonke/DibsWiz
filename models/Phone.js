@@ -14,14 +14,6 @@ const busyStates = ['Booked', 'Not Available']
 exports.busyStates = busyStates
 
 const Phone = Schema({
-  // User associated with number.
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    // A number may not have an owner,
-    // However, any person can have only one number assoicated.
-    unique: true
-  },
   // E164 formatted phone number.
   number: {
     type: String,
@@ -29,7 +21,11 @@ const Phone = Schema({
     validate: {
       validator: function (num) {
         // make sure the number is in standard form
-        return num === phone.convertToStandard(num)
+        const stdNum = phone.convertToStandard(num)
+        if (!num || !stdNum) {
+          return false
+        }
+        return num === stdNum
       }
     },
     unique: true

@@ -6,6 +6,13 @@ var User = new Schema({
   name: {
     type: String,
     required: true
+  },
+  // Every User Needs a Phone Attached
+  phone: {
+    type: Schema.Types.ObjectId,
+    ref: 'Phone',
+    required: true,
+    unique: true
   }
 })
 

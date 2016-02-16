@@ -2,6 +2,7 @@
 
 const phone = require('node-phonenumber')
 const Phone = require('../models/Phone')
+const User = require('../models/User')
 
 /* Static Helper Methods */
 
@@ -80,10 +81,15 @@ const convertToStandard = function (rawPhoneNum) {
 }
 exports.convertToStandard = convertToStandard
 
-// finds the phone associated with the given userID. Guaranteed to find
-// a phone, as a user must be associated with a phone.
-exports.findFromUserID = function (userID, callback) {
-  
+// fill is middleware that fills the req object with a .phone item.
+exports.fill = function (req, res, next) {
+  Phone.findOne({user: req.user._id}, function (err, phone) {
+    if (err) {
+      return next(err)
+    }
+    req.phone = phone
+    return next()
+  })
 }
 
 // If I need to search phone and populate, steal it from member.js

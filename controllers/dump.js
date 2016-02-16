@@ -3,6 +3,7 @@
 const router = require('express').Router()
 const User = require('../models/User')
 const Phone = require('../models/Phone')
+const Group = require('../models/Group')
 
 router.get('/users', function (req, res) {
   dumpModel(req, res, User)
@@ -16,6 +17,10 @@ router.get('/phones', function (req, res) {
   dumpModel(req, res, Phone)
 })
 
+router.get('/groups', function (req, res) {
+  dumpModel(req, res, Group)
+})
+
 const dumpModel = function (req, res, model, toPopulate) {
   let populateStr = ''
   if (toPopulate) {
@@ -23,14 +28,14 @@ const dumpModel = function (req, res, model, toPopulate) {
   }
 
   model
-  .find({}, function (err, users) {
-    if (err) {
-      console.log(err)
-      return
-    }
-    res.json(users)
-  })
-  .populate(populateStr)
+    .find({}, function (err, users) {
+      if (err) {
+        console.log(err)
+        return
+      }
+      res.json(users)
+    })
+    .populate(populateStr)
 }
 
 module.exports = router

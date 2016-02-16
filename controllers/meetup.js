@@ -31,10 +31,14 @@ router.route('/new')
     })
   })
   // when someone submits a new group
-  .post(function (req, res, next) {
+  .post(phone.fill, function (req, res, next) {
+    console.log(req.phone)
     console.log(req.body)
     const submission = req.body
-    const newGroup = new Group({name: submission.groupName})
+    const newGroup = new Group({
+      name: submission.groupName,
+      members: []
+    })
     // Let's start our callback doosey to process the things that have been given!
     // Why not usernames to start?
     processUsernameSubmissions(submission.usernames, function (err, phoneIDs) {
@@ -42,7 +46,6 @@ router.route('/new')
         return next(err)
       }
       // Let's add the phoneIDs we've retrieved into our new group object!
-      newGroup.members = []
       for (let phoneID of phoneIDs) {
         newGroup.members.push({phone: phoneID})
       }
@@ -60,9 +63,9 @@ router.route('/new')
         }
         // Nice! Let's save the group we made!
         newGroup.save()
-        // Now we should do something cool like redirect the user or something...
-        // Nahhhhhhh. (but really, there's just no other page to redirect to!)
-        // Gotta create it :)
+      // Now we should do something cool like redirect the user or something...
+      // Nahhhhhhh. (but really, there's just no other page to redirect to!)
+      // Gotta create it :)
       })
     })
   })
