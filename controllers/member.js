@@ -9,10 +9,9 @@ router.post('/lookup', function (req, res, next) {
   const username = req.body.username
   const phoneNumber = req.body.phoneNumber
   if (username) {
-    User.findOne({username: username}, function (err, user) {
+    User.findOne({username: username}, function (err, user, next) {
       if (err) {
-        console.log(err)
-        throw new Error('There was an error looking up username: ' + username)
+        return next(err)
       }
       // If no user was found
       if (!user) {
@@ -35,22 +34,26 @@ router.post('/lookup', function (req, res, next) {
     }
     Phone
       .findOne({number: normPhoneNumber})
-      .populate('user')
+      .select({ _id: 1 })
       .exec(function (err, phone) {
         if (err) {
-          console.log(err)
-          return next(new Error('There was an error looking up phoneNumber: ' + phoneNumber))
+          return next(err)
         }
         if (!phone) {
           // Send a blank msg back with OK status, since this is not an error.
           return res.sendStatus(204)
         }
-        // otherwise, send back the valid user.
-        res.json({
-          user: {
-            username: phone.user.username,
-            displayName: phone.user.name
+        // otherwise, the phone is valid, so let's find the user and send it back.
+        User.findOne({phone: phone._id}, function (err, user) {
+          if (err) {
+            return next(err)
           }
+          res.json({
+            user: {
+              username: user.username,
+              displayName: user.name
+            }
+          })
         })
       })
   } else {

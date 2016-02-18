@@ -14,9 +14,10 @@ const weeklyMeetup = {
 }
 
 const roleParticipant = 'participant'
+const roleAdmin = 'admin'
 
 const roles = [
-  'admin', // have full administrative rights. Can delete group.
+  roleAdmin, // have full administrative rights. Can delete group.
   roleParticipant // basic role. Has no rights other than themselves.
 ]
 

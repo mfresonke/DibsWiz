@@ -7,6 +7,7 @@ $(document).ready(function () {
   const inputDisplayName = $('#inputDisplayName')
   const inputPhoneNumber = $('#inputPhoneNumber')
   const alertInvalidPhoneNum = $('#alertInvalidPhoneNumber')
+  const alertUserFound = $('#alertUserFound')
   // Add By Username Fields
   const btnAddUserByUsername = $('#btnAddUserByUsername')
   const modalAddByUsername = $('#modalAddByUsername')
@@ -22,6 +23,64 @@ $(document).ready(function () {
   // the current user's username is added by default.
   const addedUsers = new Map([[$('#userRep').find('#usernameSubtext').text(), true]])
 
+  /* Button Click Handlers */
+
+  btnAddUserByNum.click(function () {
+    // Create New User Object Based on Fields
+    const user = {
+      displayName: inputDisplayName.val(),
+      phoneNumber: inputPhoneNumber.val()
+    }
+    checkUser(user, function (user) {
+      // If the user is returned missing data...
+      if (!user.username && !user.phoneNumber) {
+        addUserByNumErr('The phone number you entered is invalid.')
+      } else if (!user.displayName) {
+        addUserByNumErr('Please Enter a Valid Nickname')
+      } else if (checkAndAddToMap(user)) {
+        addUserByNumErr('The phone number you entered has already been added.')
+      } else {
+        // we gucci
+        addToList(user)
+        clearFields()
+        hideModal(modalAddByCell)
+      }
+    })
+  })
+
+  btnAddUserByUsername.click(function () {
+    const user = {
+      username: inputUsername.val()
+    }
+    checkUser(user, function (user) {
+      if (!user.username) {
+        addUserByUsernameErr('Username not found.')
+      } else if (checkAndAddToMap(user)) {
+        addUserByUsernameErr('Username has already been added.')
+      } else {
+        addToList(user)
+        clearFields()
+        hideModal(modalAddByUsername)
+      }
+    })
+  })
+
+  // add listeners to phone input
+  inputPhoneNumber.blur(function () {
+    const user = {
+      phoneNumber: inputPhoneNumber.val()
+    }
+    checkUser(user, function (user) {
+      if (user.username) {
+        alertUserFound.removeClass('hidden')
+        inputDisplayName.val(user.displayName)
+        inputDisplayName.prop('disabled', true)
+      } else {
+        inputDisplayName.prop('disabled', false)
+      }
+    })
+  })
+
   const hideModal = function (modal) {
     modal.modal('hide')
   }
@@ -29,26 +88,29 @@ $(document).ready(function () {
   const clearFields = function () {
     inputDisplayName.val('')
     inputPhoneNumber.val('')
+    inputDisplayName.prop('disabled', false)
     inputUsername.val('')
     alertInvalidPhoneNum.addClass('hidden')
     alertInvalidUsername.addClass('hidden')
+    alertUserFound.addClass('hidden')
     $('#divUsername').removeClass('has-error')
     $('#divPhoneNumber').removeClass('has-error')
   }
 
   const addToList = function (user) {
-    const displayName = user.displayName
-    if (!displayName) {
+    if (!user.displayName) {
       throw new Error('Error. No valid display name in user.')
     }
     if (user.username) {
-      newUserRep(displayName, user.username)
+      newUserRep(user)
     } else if (user.phoneNumber) {
-      newPhoneRep(displayName, user.phoneNumber)
+      newPhoneRep(user)
     }
   }
 
-  const newUserRep = function (displayName, username) {
+  const newUserRep = function (user) {
+    const username = user.username
+    const displayName = user.displayName
     const userRep = $('#userRep').clone()
     userRep.find('#usernameSubtext').text(username)
     userRep.removeAttr('id')
@@ -58,15 +120,16 @@ $(document).ready(function () {
     button.removeClass('disabled')
     // Set Display Vals Properly
     userRep.find('input')
-            .attr('name', 'users')
-            .val(displayName)
+      .attr('name', 'users')
+      .val(displayName)
     // Create a Hidden Form Element to Transfer Add'tl data
     const hiddenForm = $('<input>')
-                          .attr('type', 'hidden')
-                          .attr('name', 'usernames')
-                          .val(username)
+      .attr('type', 'hidden')
+      .attr('name', 'usernames')
+      .val(username)
     // Add an OnClick to Remove the Element and it's associated hidden form
     button.click(function () {
+      removeFromMap(user)
       userRep.remove()
       hiddenForm.remove()
     })
@@ -75,7 +138,9 @@ $(document).ready(function () {
     ctrMembers.append($(hiddenForm))
   }
 
-  const newPhoneRep = function (displayName, phoneNumber) {
+  const newPhoneRep = function (user) {
+    const phoneNumber = user.phoneNumber
+    const displayName = user.displayName
     const newUserRep = $('#newUserRep').clone()
     newUserRep.find('#phoneSubtext').text(phoneNumber)
     newUserRep.removeAttr('id')
@@ -84,16 +149,17 @@ $(document).ready(function () {
     button.removeClass('disabled')
     // Set Display Vals Properly
     newUserRep.find('input')
-            .attr('name', 'phoneNames')
-            .val(displayName)
+      .attr('name', 'phoneNames')
+      .val(displayName)
 
     // Create a Hidden Form Element to Transfer Add'tl data
     const hiddenForm = $('<input>')
-                          .attr('type', 'hidden')
-                          .attr('name', 'phoneNumbers')
-                          .val(phoneNumber)
+      .attr('type', 'hidden')
+      .attr('name', 'phoneNumbers')
+      .val(phoneNumber)
     // Add an OnClick to Remove the Element
     button.click(function () {
+      removeFromMap(user)
       newUserRep.remove()
       hiddenForm.remove()
     })
@@ -119,7 +185,7 @@ $(document).ready(function () {
         if (data.user) {
           // overwrite the user object with the found user.
           user = data.user
-          // Otherwise, check if any of the data was invalid.
+        // Otherwise, check if any of the data was invalid.
         } else if (data.invalid) {
           // If so, erase that the invalid data.
           user[data.invalid] = null
@@ -149,6 +215,17 @@ $(document).ready(function () {
     addedUsers.set(varToCheck, true)
     return false
   }
+  const removeFromMap = function (user) {
+    let varToRemove
+    if (user.username) {
+      varToRemove = user.username
+    } else if (user.phoneNumber) {
+      varToRemove = user.phoneNumber
+    } else {
+      throw new Error('User not valid to remove')
+    }
+    addedUsers.delete(varToRemove)
+  }
 
   const showModalErr = function (alert, input, message) {
     input.addClass('has-error')
@@ -164,52 +241,12 @@ $(document).ready(function () {
     showModalErr(alertInvalidUsername, inputUsername, message)
   }
 
-  /* Button Click Handlers */
-
-  btnAddUserByNum.click(function () {
-    // Create New User Object Based on Fields
-    const user = {
-      displayName: inputDisplayName.val(),
-      phoneNumber: inputPhoneNumber.val()
-    }
-    checkUser(user, function (user) {
-      // If the user is returned missing data...
-      if (!user.username && !user.phoneNumber) {
-        addUserByNumErr('The phone number you entered is invalid.')
-      } else if (checkAndAddToMap(user)) {
-        addUserByNumErr('The phone number you entered has already been added.')
-      } else {
-        // we gucci
-        addToList(user)
-        clearFields()
-        hideModal(modalAddByCell)
-      }
-    })
-  })
-
-  btnAddUserByUsername.click(function () {
-    const user = {
-      username: inputUsername.val()
-    }
-    checkUser(user, function (user) {
-      if (!user.username) {
-        addUserByUsernameErr('Username is does not exist.')
-      } else if (checkAndAddToMap(user)) {
-        addUserByUsernameErr('Username has already been added.')
-      } else {
-        addToList(user)
-        clearFields()
-        hideModal(modalAddByUsername)
-      }
-    })
-  })
-
   /* Modal Show Handlers */
   modalAddByCell.on('shown.bs.modal', function (e) {
     // load the cell helper script
     // $.getScript(formhelpersURL)
   })
   modalAddByUsername.on('hidden.bs.modal', function (e) {
-  // do something...
+    // do something...
   })
 })

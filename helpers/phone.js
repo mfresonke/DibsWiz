@@ -2,7 +2,6 @@
 
 const phone = require('node-phonenumber')
 const Phone = require('../models/Phone')
-const User = require('../models/User')
 
 /* Static Helper Methods */
 
@@ -18,36 +17,27 @@ const User = require('../models/User')
  * Find a Phone Number, and Create It If It Doesn't Exist.
  *
  * @param {string} rawPhoneNum - The phone number we wish to search for or create.
- * @param {string} nickname - The User's Desired Nickname. Will override the current one if phone if it already exists.
  * @param {phoneCallback} phoneNumberCallback - A callback to run after phone number is found/created.
  */
-exports.findOrCreate = function (userID, rawPhoneNum, phoneCallback) {
+exports.findOrCreate = function (rawPhoneNum, callback) {
   const phoneNumber = convertToStandard(rawPhoneNum)
   // check that number is valid.
   if (!phoneNumber) {
-    phoneCallback(new Error('Phone Number Invalid'), null)
+    callback(new Error('Phone Number Invalid'))
     return
   }
   // Update the Phone Obj If It Exists
-  Phone.findOneAndUpdate(
-    {number: phoneNumber},
-    // Updates the nickname, and adds an owner.
-    {user: userID},
-    {new: true},
-    function (err, phone) {
-      if (err) {
-        throw new Error('Error while executing update phone query')
-      }
-      if (phone) {
-        // We're done! Call the callback.
-        phoneCallback(err, phone)
-        return
-      }
-      // otherwise, create a new phone instance.
-      Phone.create({number: phoneNumber, user: userID}, function (err, phone) {
-        phoneCallback(err, phone)
-      })
+  Phone.findOne({number: phoneNumber}, function (err, phone) {
+    if (err) {
+      return callback(err)
     }
+    if (phone) {
+      // We're done! Call the callback.
+      return callback(null, phone)
+    }
+    // otherwise, create a new phone instance.
+    Phone.create({number: phoneNumber}, callback)
+  }
   )
 }
 
@@ -65,7 +55,8 @@ const convertToStandard = function (rawPhoneNum) {
   try {
     phoneNumberObj = phoneUtil.parse(rawPhoneNum, 'US')
   } catch (e) {
-    console.log('Phone normalization threw an exception. WTF?')
+    // console.log('Phone normalization threw an exception. WTF?')
+    return null
   }
 
   if (!phoneNumberObj) {
@@ -82,8 +73,8 @@ const convertToStandard = function (rawPhoneNum) {
 exports.convertToStandard = convertToStandard
 
 // fill is middleware that fills the req object with a .phone item.
-exports.fill = function (req, res, next) {
-  Phone.findOne({user: req.user._id}, function (err, phone) {
+exports.addToReq = function (req, res, next) {
+  Phone.findById(req.user.phone, function (err, phone) {
     if (err) {
       return next(err)
     }

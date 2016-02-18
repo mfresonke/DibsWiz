@@ -15,6 +15,9 @@ const hbs = require('hbs')
 const components = require('./helpers/components')
 const user = require('./helpers/user')
 
+// imported just for side effects
+require('./helpers/handlebars')
+
 const app = express()
 
 // setup env

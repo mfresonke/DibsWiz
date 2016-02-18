@@ -13,7 +13,7 @@
         {{#each groups}}
         <a href="#" class="list-group-item">
           <h4 class="list-group-item-heading">{{this.name}}</h4>
-          <p class="list-group-item-text">Group Has {{this.members.length}} members, with {{this.weeklyMeetups.length}} weekly meetups!</p>
+          <p class="list-group-item-text">Group Has {{this.members.length}} {{#compare this.members.length "===" 1}}member{{else}}members{{/compare}}, with {{this.weeklyMeetups.length}} weekly meetups!</p>
         </a>
         {{/each}}
       </div>
@@ -27,7 +27,6 @@
     <h2>Create New Group</h2>
     <form role="form" method="post" data-toggle="validator">
       <div class="form-group">
-        <!-- <label for="inputsm">Name</label> -->
         <input class="form-control input-lg" placeholder="Group Name" name="groupName" required type="text">
       </div>
       <h3>Members</h3>
@@ -77,15 +76,16 @@
               <h4 class="modal-title" id="myModalLabel">Add User</h4>
             </div>
             <div class="modal-body">
+              <div id="alertUserFound" class="alert alert-info hidden" role="alert">User Found! Filling in Nickname.</div>
               <div id="alertInvalidPhoneNumber" class="alert alert-danger hidden" role="alert">Please Input A Valid Number!</div>
-              <div class="input-group input-group">
-                <span class="input-group-addon glyphicon glyphicon-font"></span>
-                <input id="inputDisplayName" type="text" class="form-control" placeholder="Display Name">
-              </div>
-              <br/>
               <div id="divPhoneNumber" class="input-group">
                 <span class="input-group-addon glyphicon glyphicon-phone" id="basic-addon1"></span>
                 <input id="inputPhoneNumber" type="tel" class="form-control bfh-phone" data-format="+1 (ddd) ddd-dddd">
+              </div>
+              <br/>
+              <div class="input-group input-group">
+                <span class="input-group-addon glyphicon glyphicon-font"></span>
+                <input id="inputDisplayName" type="text" class="form-control" placeholder="Nickname">
               </div>
             </div>
             <div class="modal-footer">

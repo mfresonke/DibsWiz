@@ -2,11 +2,9 @@
 
 const router = require('express').Router()
 const path = require('path')
-const group = require('../helpers/group')
 const Group = require('../models/Group')
 const User = require('../models/User')
 const phone = require('../helpers/phone')
-const Phone = require('../models/Phone')
 
 const components = require('../helpers/components')
 const formHelpers = components.formHelpers
@@ -17,7 +15,7 @@ router.route('/new')
   .get(function (req, res, next) {
     const user = req.user
     // get groups assoc. with user.
-    group.allFromUserID(user._id, function (err, groups) {
+    Group.find({'members.phone': user.phone}, function (err, groups) {
       if (err) {
         return next(err)
       }
@@ -31,13 +29,15 @@ router.route('/new')
     })
   })
   // when someone submits a new group
-  .post(phone.fill, function (req, res, next) {
-    console.log(req.phone)
-    console.log(req.body)
+  .post(function (req, res, next) {
     const submission = req.body
     const newGroup = new Group({
       name: submission.groupName,
-      members: []
+      // create base members object with user themselves as a member.
+      members: [{
+        phone: req.user.phone,
+        role: 'admin'
+      }]
     })
     // Let's start our callback doosey to process the things that have been given!
     // Why not usernames to start?
@@ -61,11 +61,10 @@ router.route('/new')
             nickname: nicknames[i]
           })
         }
+        console.log(newGroup)
         // Nice! Let's save the group we made!
         newGroup.save()
-      // Now we should do something cool like redirect the user or something...
-      // Nahhhhhhh. (but really, there's just no other page to redirect to!)
-      // Gotta create it :)
+        res.redirect('/meetup/new')
       })
     })
   })
@@ -82,37 +81,24 @@ const processUsernameSubmissions = function (usernames, callback) {
   if (typeof usernames === 'string') {
     usernames = [usernames]
   }
-  User.find({username: {$in: usernames}}, '_id', function (err, users) {
-    if (err) {
-      return callback(err)
-    }
-    // make sure we were able to find ALL of the users given.
-    if (users.length !== usernames.length) {
-      return callback(new Error('There was an error retrieving all users from the DB.'))
-    }
-    // Extract just the user IDs from each user obj
-    const userIDs = []
-    for (let user of users) {
-      userIDs.push(user._id)
-    }
-    // OK cool! If we made it this far, we have all the relevant userID fields.
-    //  now, let's search the phone records for matching users.
-    Phone.find({user: {$in: userIDs}}, function (err, phones) {
+  User
+    .find({username: {$in: usernames}})
+    .select('phone')
+    .exec(function (err, users) {
       if (err) {
         return callback(err)
       }
-      // check that we found all the phones...
-      if (phones.length !== userIDs.length) {
-        return callback(new Error('WTF? Some users did not have phones associated.'))
+      // make sure we were able to find ALL of the users given.
+      if (users.length !== usernames.length) {
+        return callback(new Error('There was an error retrieving all users from the DB.'))
       }
-      // else let's extract the phone IDs and call that callback!
       const phoneIDs = []
-      for (let phone of phones) {
-        phoneIDs.push(phone._id)
+      // Extract the phone IDs from each user obj
+      for (let user of users) {
+        phoneIDs.push(user.phone)
       }
       return callback(null, phoneIDs)
     })
-  })
 }
 
 // Processes the raw phone names and phone nums from the submission.
@@ -135,28 +121,27 @@ const processPhoneSubmissions = function (phoneNums, phoneNames, callback) {
     return callback(new Error('Phone Numbers and Phone Names from Post Not Of Equal Length!'))
   }
   // holds the to-be-inserted phone objects.
-  const toInsert = []
-  // save some new phone numbers and retrieve the IDs!
-  for (let phoneNum of phoneNums) {
-    const normdPhoneNum = phone.convertToStandard(phoneNum)
-    if (!normdPhoneNum) {
-      return callback(new Error('One of the phone Numbers, ' + phoneNum + ' failed to normalize.'))
-    }
-    toInsert.push({number: normdPhoneNum})
-  }
-  // Nice! Now let's insert the phone objs into the DB!
-  Phone.insertMany(toInsert, function (err, phones) {
+  const phoneIDs = []
+  const phoneItr = phoneNums[Symbol.iterator]()
+  let currItr = phoneItr.next()
+  // here we define a callback that will loop through all the phones, add
+  //  them to the phoneIDs array, and then finally call the ending callback
+  //  when finished.
+  const findPhonesCB = function (err, newPhone) {
     if (err) {
       return callback(err)
     }
-    const phoneIDs = []
-    // extract all the IDs out of the phones.
-    for (let phone of phones) {
-      phoneIDs.push(phone._id)
+    phoneIDs.push(newPhone._id)
+    // now that we've pushed the phone ID, go to the next phone iteration
+    currItr = phoneItr.next()
+    if (currItr.done) {
+      return callback(null, phoneIDs, phoneNames)
     }
-    // nice! now let's call the callback.
-    return callback(null, phoneIDs, phoneNames)
-  })
+    // otherwise, we're not done. let's call phone.findOrCreate again.
+    phone.findOrCreate(currItr.value, findPhonesCB)
+  }
+  // now we kickstart the process by calling it once here!
+  phone.findOrCreate(currItr.value, findPhonesCB)
 }
 
 module.exports = router

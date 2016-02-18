@@ -14,7 +14,7 @@ var User = new Schema({
     required: true,
     unique: true
   }
-})
+}, {timestamps: true})
 
 User.plugin(passportLocalMongoose)
 
