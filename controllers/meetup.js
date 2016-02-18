@@ -19,7 +19,7 @@ router.route('/new')
       if (err) {
         return next(err)
       }
-      res.render('new-meetup', {
+      res.render('new-meetup/group-select', {
         // Data for template goes here.
         user: req.user,
         groups: groups,
