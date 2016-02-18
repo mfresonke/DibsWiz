@@ -98,10 +98,12 @@ app.get('/', function (req, res, next) {
   res.render('index', {user: req.user})
 })
 
+const MeetupController = require('./controllers/meetup')
+
+app.use(MeetupController.prefix, MeetupController.router)
 app.use('/auth', require('./controllers/authenticate'))
 app.use('/dump', require('./controllers/dump'))
 app.use('/schedule', require('./controllers/schedule'))
-app.use('/meetup', user.isAuthenticated, require('./controllers/meetup'))
 app.use('/member', user.isAuthenticated, require('./controllers/member'))
 
 // catch 404 and forward to error handler
