@@ -198,6 +198,10 @@ router.route(selectDaysWithIDRoute)
         return next(err)
       })
   })
+  .post(function (req, res, next) {
+    res.send(req.body)
+    console.log(req.body)
+  })
 
 // Returns a promise containing a valid group or throws an error if not valid.
 const retrieveAndVerifyGroup = function (user, groupID) {
