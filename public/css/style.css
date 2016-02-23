@@ -1,12 +1,15 @@
-/*input[type=text], input[type=password], input[type=email], input[type=date], input[type=number], input[type=search], textarea {
-    border: 3px solid #cccccc;
+input[type=text], input[type=password], input[type=email], input[type=date], input[type=number], input[type=search], textarea {
+    border: 1px solid #aaaaaa;
     padding: .6em 1em;
     font-weight: 200;
     width: 100%;
     -webkit-appearance: none;
     box-shadow: none;
     box-sizing: border-box;
-}*/
+    border-radius: 3px;
+}
+
+
 
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;

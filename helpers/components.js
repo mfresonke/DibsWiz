@@ -45,6 +45,10 @@ exports.pickadate = {
   time: {
     js: path.join(pickadateDir, 'picker.time.js'),
     css: path.join(pickadateDir, 'themes/default.time.css')
+  },
+  date: {
+    js: path.join(pickadateDir, 'picker.date.js'),
+    css: path.join(pickadateDir, 'themes/default.date.css')
   }
 }
 

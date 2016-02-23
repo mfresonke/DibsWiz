@@ -15,23 +15,30 @@
     <div class="row">
       <div class="col-lg-6 text-center">
         <h3>Repeating Meetup?</h3>
-        <input id="repeatingMeetupCheckbox" type="checkbox" name="repeating">
-        <h3>What Day(s) Will Your Group Meet?</h3>
-        <div class="btn-group" data-toggle="buttons">
-          {{#each weekdays}}
-            <label class="btn btn-primary btn-lg">
-              <input type="checkbox" id="checkbox{{this.day}}" name="daysSelected" value="{{this.day}}">{{this.disp}}<br/><small>{{this.nextDate}}</small>
-            </label>
-          {{/each}}
+        <input id="repeatingMeetupSwitch" type="checkbox" name="repeating" />
+
+        <div id="singleMeetupDiv">
+          <h3>What Date?</h3>
+          <input id="singleMeetupDatepicker" name="singleMeetupDate" class="fieldset__input js__datepicker picker__input" type="text" placeholder="Select a Day to Meetup" readonly="">
         </div>
-        <span>  </span>
-        <div class="btn-group" data-toggle="buttons">
-          {{#each weekends}}
-            <label class="btn btn-info btn-lg">
-              <input type="checkbox" id="checkbox{{this.day}}" name="daysSelected" value="{{this.day}}">{{this.disp}}<br />
-              <small>{{this.nextDate}}</small>
-            </label>
-          {{/each}}
+
+        <div id="repeatingMeetupDiv" hidden>
+          <h3>What Weekdays?</h3>
+          <div class="btn-group" data-toggle="buttons">
+            {{#each weekdays}}
+              <label class="btn btn-primary btn-lg">
+                <input type="checkbox" id="checkbox{{this.day}}" name="daysSelected" value="{{this.day}}">{{this.disp}}
+              </label>
+            {{/each}}
+          </div>
+          <span>  </span>
+          <div class="btn-group" data-toggle="buttons">
+            {{#each weekends}}
+              <label class="btn btn-info btn-lg">
+                <input type="checkbox" id="checkbox{{this.day}}" name="daysSelected" value="{{this.day}}">{{this.disp}}
+              </label>
+            {{/each}}
+          </div>
         </div>
         <h3>What Library?</h3>
         <div class="form-group">
@@ -44,24 +51,19 @@
         </div>
       </div>
       <div class="col-lg-6" align="center">
-        <h3>Choose a Starting Time</h3>
+        <h3>What Time to Start?</h3>
         <input id="pickadate-begin" name="timeBegin" class="" type="text" placeholder="Start Time" readonly="" aria-haspopup="true">
         <br/>
-        <h3>Choose an Ending Time</h3>
+        <h3>What Time to End?</h3>
         <input id="pickadate-end" name="timeEnd" class="" type="text" placeholder="End Time" readonly="" aria-haspopup="true">
       </div>
     </div>
     <div class="row" align="center">
       <div class="col-md-3"></div>
       <div class="col-md-6">
-        <div class="btn-group btn-group-justified" role="group">
-          <div class="btn-group" role="group">
-            <button type="submit" class="btn btn-primary btn-lg" name="subming eltType" value="once">Schedule Once</button>
-          </div>
-          <div class="btn-group" role="group">
-            <button type="submit" class="btn btn-info btn-lg" name="submitType" value="weekly">Schedule Weekly</button>
-          </div>
-        </div>
+        <button type="submit" class="btn btn-primary btn-lg">
+          <span class="glyphicon glyphicon-calendar"></span> Schedule Meetup
+        </button>
       </div>
       <div class="col-md-3"></div>
     </div>

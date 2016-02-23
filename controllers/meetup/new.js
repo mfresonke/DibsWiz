@@ -17,8 +17,8 @@ const awesomeCheckboxCSS = components.awesomeCheckboxCSS
 const pickadate = components.pickadate
 const bootstrapSwitch = components.bootstrapSwitch
 // custom JS
-const selectGroupJS = path.join(components.publicJS, 'meetup.js')
-const chooseDateJS = path.join(components.publicJS, 'schedule.js')
+const selectGroupJS = path.join(components.publicJS, 'meetup-new-select-group.js')
+const chooseDateJS = path.join(components.publicJS, 'meetup-new-select-days.js')
 
 /* Routers */
 
@@ -234,8 +234,8 @@ const selectPage = function (user) {
         // Navbar Vars
         activePage: {schedule: true},
         // Scripts and CSS
-        scripts: [pickadate.base.js, pickadate.time.js, formHelpers.js, chooseDateJS, bootstrapSwitch.js],
-        stylesheets: [awesomeCheckboxCSS, pickadate.base.css, pickadate.time.css, formHelpers.css, bootstrapSwitch.css]
+        scripts: [pickadate.base.js, pickadate.time.js, pickadate.date.js, bootstrapSwitch.js, chooseDateJS],
+        stylesheets: [awesomeCheckboxCSS, pickadate.base.css, pickadate.time.css, pickadate.date.css, bootstrapSwitch.css]
       }
     })
 }
