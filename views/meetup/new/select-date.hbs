@@ -28,7 +28,8 @@
         <div class="btn-group" data-toggle="buttons">
           {{#each weekends}}
             <label class="btn btn-info btn-lg">
-              <input type="checkbox" id="checkbox{{this.day}}" name="daysSelected" value="{{this.day}}">{{this.disp}}
+              <input type="checkbox" id="checkbox{{this.day}}" name="daysSelected" value="{{this.day}}">{{this.disp}}<br />
+              <small>{{this.nextDate}}</small>
             </label>
           {{/each}}
         </div>

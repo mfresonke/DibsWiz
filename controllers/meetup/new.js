@@ -247,7 +247,7 @@ function DispDay (display, dayNum) {
   // set the base object
   const todayNum = moment().day()
   let nextDateObj = moment().day(dayNum)
-  if (dayNum < todayNum) {
+  if (dayNum <= todayNum) {
     nextDateObj.add(1, 'week')
   }
   this.nextDate = nextDateObj.format('M/D')
