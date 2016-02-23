@@ -1,123 +1,39 @@
 'use strict'
 
-const router = require('express').Router()
+const express = require('express')
 const path = require('path')
-const Group = require('../models/Group')
-const User = require('../models/User')
-const phone = require('../helpers/phone')
+const Group = require('../../models/Group')
+const User = require('../../models/User')
+const phone = require('../../helpers/phone')
+const routes = require('./routes')
 
 /* Components */
-const components = require('../helpers/components')
+const components = require('../../helpers/components')
 const formHelpers = components.formHelpers
 const awesomeCheckboxCSS = components.awesomeCheckboxCSS
 const pickadate = components.pickadate
 const selectGroupJS = path.join(components.publicJS, 'meetup.js')
 const chooseDateJS = path.join(components.publicJS, 'schedule.js')
 
-/* Page URLs */
-const prefix = '/meetup'
-const chooseGroupPage = '/new'
-const chooseDatePage = '/new/choose-dates'
+/* Routers */
 
-router.route(chooseDatePage)
-  .get(function (req, res) {
-    res.render('meetup/new/select-date', {
-      // Fun Stuff!
-      weekends: [new DispDay('Sun', 0), new DispDay('Sat', 6)],
-      weekdays: [
-        new DispDay('Mon', 1), new DispDay('Tues', 2), new DispDay('Wed', 3),
-        new DispDay('Thurs', 4), new DispDay('Fri', 5)
-      ],
-      // Boring Stuff
-      user: req.user,
-      activePage: {schedule: true},
-      scripts: [pickadate.base.js, pickadate.time.js, formHelpers.js, chooseDateJS],
-      stylesheets: [awesomeCheckboxCSS, pickadate.base.css, pickadate.time.css, formHelpers.css]
-    })
-  })
+// Routes
+const router = express.Router()
+const prefix = routes.newPrefix
+const selectGroupRoute = '/'
+const selectDaysNoIDRoute = '/group'
+const selectDaysWithIDRoute = path.join(selectDaysNoIDRoute, ':id')
 
-// Used for displaying a day with embedded day num info
-function DispDay (display, dayNum) {
-  this.disp = display
-  this.day = dayNum
-}
+// Paths (full URLs)
+const selectDaysNoIDURL = path.join(prefix, selectDaysNoIDRoute)
 
-const minValidNameLen = 1
+/* STEP ONE: Select or Create a Group */
 
-function SubmittedMeetup (body) {
-  this.isValid = false
-
-  /* Perform Basic (Synchronous) Validation and Set Properties */
-
-  // Meetup Name
-  const name = body.meetupName
-  if (typeof name !== 'string' && name.length < minValidNameLen) {
-    return
-  }
-  this.name = name
-
-  // Member Usernames.
-  const usernames = body.memberUsernames
-  // Check the case that the usernames are in an Array
-  if (usernames instanceof Array) {
-    // If so, no manip. is necessary. Directly assign them.
-    this.usernames = usernames
-  } else if (typeof usernames === 'string') {
-    // Put the lone username in an array.
-    this.usernames = [usernames]
-  } else {
-    // Then there are no usernames. Make this.usernames an empty array.
-    this.usernames = []
-  }
-
-  // Member Phone Numbers.
-  const phoneNumbers = body.memberPhoneNumbers
-  this.phoneNumbers = []
-  if (phoneNumbers instanceof Array) {
-    for (let phoneNumber of phoneNumbers) {
-      const stdPhoneNum = phone.convertToStandard(phoneNumber)
-      // if number is valid, add to array.
-      if (stdPhoneNum) {
-        this.phoneNumbers.push(stdPhoneNum)
-      }
-    }
-  } else if (typeof phoneNumbers === 'string') {
-    const stdPhoneNum = phone.convertToStandard(phoneNumbers)
-    if (stdPhoneNum) {
-      this.phoneNumbers.push(stdPhoneNum)
-    }
-  }
-
-  // Check that there is at least one username or phone.
-  if (this.usernames.length === 0 && this.phoneNumbers.length === 0) {
-    // Then this submission is not valid. Return.
-    return
-  }
-
-  // Begin Days Parse
-  const daysSelectedStrs = body.daysSelected
-  this.daysSelected = []
-  for (let dayStr of daysSelectedStrs) {
-    // Parse the day numbers into
-    const day = parseInt(dayStr, 10)
-    if (typeof day === 'number') {
-      this.daysSelected.push(day)
-    }
-  }
-  // Check that there is at least one day selected.
-  if (this.daysSelected === 0) {
-    return
-  }
-  console.log(body.timeBegin)
-  console.log(body.timeEnd)
-  this.timeBegin = body.timeBegin
-  this.timeEnd = body.timeEnd
-  this.submitType = body.submitType
-}
-
-router.route(chooseGroupPage)
+router.route(selectGroupRoute)
   // create new group page
   .get(function (req, res, next) {
+    // TODO: Re-render prev-made group (in case user hit back)
+    // const group = req.session.group
     const user = req.user
     // get groups assoc. with user.
     Group.find({'members.phone': user.phone}, function (err, groups) {
@@ -128,6 +44,7 @@ router.route(chooseGroupPage)
         // Data for template goes here.
         user: req.user,
         groups: groups,
+        nextURL: selectDaysNoIDURL,
         scripts: [formHelpers.js, selectGroupJS],
         stylesheets: [formHelpers.css]
       })
@@ -173,7 +90,7 @@ router.route(chooseGroupPage)
             // save the group to the session.
             req.session.group = group
             // redirect them to the next page.
-            res.redirect(path.join(prefix, chooseDatePage))
+            res.redirect(path.join(selectDaysNoIDURL, group._id.toString()))
           })
           .catch(function (err) {
             return next(err)
@@ -257,7 +174,127 @@ const processPhoneSubmissions = function (phoneNums, phoneNames, callback) {
   phone.findOrCreate(currItr.value, findPhonesCB)
 }
 
-module.exports = {
-  router: router,
-  prefix: prefix
+/* STEP 2: Select Days */
+router.route(selectDaysWithIDRoute)
+  .get(function (req, res, next) {
+    const user = req.user
+    // Get and Verify Group
+    Group.findById(req.params.id).exec()
+      .then(function (group) {
+        // check if the group even exists
+        if (!group) {
+          throw new Error('Group not Found')
+        }
+        // check if the group was found
+        if (!group.isMember(user.phone)) {
+          throw new Error('User not a member of Group')
+        }
+        // render page
+        const basePage = selectPage(user, group)
+        res.render('meetup/new/select-date', basePage)
+      })
+      .catch(function (err) {
+        console.log(err)
+        return next(err)
+      })
+  })
+
+const selectPage = function (user, group) {
+  return {
+    // User Defined Vars
+    user: user,
+    group: group,
+    // Visual Helper Variables
+    weekends: [new DispDay('Sun', 0), new DispDay('Sat', 6)],
+    weekdays: [
+      new DispDay('Mon', 1), new DispDay('Tues', 2), new DispDay('Wed', 3),
+      new DispDay('Thurs', 4), new DispDay('Fri', 5)
+    ],
+    // Navbar Vars
+    activePage: {schedule: true},
+    // Scripts and CSS
+    scripts: [pickadate.base.js, pickadate.time.js, formHelpers.js, chooseDateJS],
+    stylesheets: [awesomeCheckboxCSS, pickadate.base.css, pickadate.time.css, formHelpers.css]
+  }
 }
+
+// Used for displaying a day with embedded day num info
+function DispDay (display, dayNum) {
+  this.disp = display
+  this.day = dayNum
+}
+
+const minValidNameLen = 1
+
+function SubmittedMeetup (body) {
+  this.isValid = false
+
+  /* Perform Basic (Synchronous) Validation and Set Properties */
+
+  // Meetup Name
+  const name = body.meetupName
+  if (typeof name !== 'string' && name.length < minValidNameLen) {
+    return
+  }
+  this.name = name
+
+  // Member Usernames.
+  const usernames = body.memberUsernames
+  // Check the case that the usernames are in an Array
+  if (usernames instanceof Array) {
+    // If so, no manip. is necessary. Directly assign them.
+    this.usernames = usernames
+  } else if (typeof usernames === 'string') {
+    // Put the lone username in an array.
+    this.usernames = [usernames]
+  } else {
+    // Then there are no usernames. Make this.usernames an empty array.
+    this.usernames = []
+  }
+
+  // Member Phone Numbers.
+  const phoneNumbers = body.memberPhoneNumbers
+  this.phoneNumbers = []
+  if (phoneNumbers instanceof Array) {
+    for (let phoneNumber of phoneNumbers) {
+      const stdPhoneNum = phone.convertToStandard(phoneNumber)
+      // if number is valid, add to array.
+      if (stdPhoneNum) {
+        this.phoneNumbers.push(stdPhoneNum)
+      }
+    }
+  } else if (typeof phoneNumbers === 'string') {
+    const stdPhoneNum = phone.convertToStandard(phoneNumbers)
+    if (stdPhoneNum) {
+      this.phoneNumbers.push(stdPhoneNum)
+    }
+  }
+
+  // Check that there is at least one username or phone.
+  if (this.usernames.length === 0 && this.phoneNumbers.length === 0) {
+    // Then this submission is not valid. Return.
+    return
+  }
+
+  // Begin Days Parse
+  const daysSelectedStrs = body.daysSelected
+  this.daysSelected = []
+  for (let dayStr of daysSelectedStrs) {
+    // Parse the day numbers into
+    const day = parseInt(dayStr, 10)
+    if (typeof day === 'number') {
+      this.daysSelected.push(day)
+    }
+  }
+  // Check that there is at least one day selected.
+  if (this.daysSelected === 0) {
+    return
+  }
+  console.log(body.timeBegin)
+  console.log(body.timeEnd)
+  this.timeBegin = body.timeBegin
+  this.timeEnd = body.timeEnd
+  this.submitType = body.submitType
+}
+
+module.exports = router

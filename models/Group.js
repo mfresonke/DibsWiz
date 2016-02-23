@@ -39,4 +39,13 @@ const Group = Schema({
   weeklyMeetups: [weeklyMeetup]
 })
 
+Group.methods.isMember = function (phoneID) {
+  for (let member of this.members) {
+    if (member.phone.equals(phoneID)) {
+      return true
+    }
+  }
+  return false
+}
+
 module.exports = mongoose.model('Group', Group)

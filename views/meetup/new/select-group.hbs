@@ -11,7 +11,7 @@
     {{#if groups}}
       <div class="list-group">
         {{#each groups}}
-        <a href="#" class="list-group-item">
+        <a href="{{../nextURL}}/{{this._id}}" class="list-group-item">
           <h4 class="list-group-item-heading">{{this.name}}</h4>
           <p class="list-group-item-text">Group Has {{this.members.length}} {{#compare this.members.length "===" 1}}member{{else}}members{{/compare}}, with {{this.weeklyMeetups.length}} weekly meetups!</p>
         </a>

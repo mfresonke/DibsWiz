@@ -1,9 +1,18 @@
 <div class="container" role="main">
+  <div class="col-md-12">
+    <ol class="breadcrumb">
+      <li><a href="#">Meetups</a></li>
+      <li>Create New</li>
+      <li><a href="/meetup/new">Select Group</a></li>
+      <li>{{group.name}}</li>
+      <li class="active">Select Times</li>
+    </ol>
+  </div>
   <form role="form" method="post">
     <div class="row">
       <div class="col-md-2"></div>
       <div class="col-md-8" align="center">
-        <h1>Create a Marston Meetup!</h1>
+        <h1>New Meetup for {{group.name}}!</h1>
         <div class="input-group input-group-lg">
           <span class="input-group-addon" id="basic-addon3">Name</span>
           <input name="meetupName" type="text" class="form-control" placeholder="e.g. Digital Design Meetup" aria-describedby="sizing-addon1">
