@@ -6,6 +6,8 @@ const minifier = require('minifier')
 const less = require('less')
 const path = require('path')
 
+// Common Folders
+
 const publicBC = path.join('/bower_components')
 const publicFolder = '/public'
 const publicJS = path.join(publicFolder, 'js')
@@ -17,17 +19,23 @@ exports.publicJS = publicJS
 exports.publicCSS = publicCSS
 exports.publicModules = publicModules
 
+/* Begin Individual Modules */
+
+// AwesomeCheckbox
 exports.awesomeCheckboxCSS = path.join(publicCSS, 'awesome-bootstrap-checkbox.min.css')
 
+// BootstrapValidator
 const bootstrapValidatorDir = path.join(publicBC, 'bootstrap-validator/dist')
 exports.bootstrapValidatorJS = path.join(bootstrapValidatorDir, 'validator.min.js')
 
+// FormHelpers
 const formhelpersDir = path.join(publicBC, 'bootstrap-formhelpers/dist')
 exports.formHelpers = {
   js: path.join(formhelpersDir, 'js/bootstrap-formhelpers.min.js'),
   css: path.join(formhelpersDir, 'css/bootstrap-formhelpers.min.css')
 }
 
+// Pickadate
 const pickadateDir = path.join(publicBC, 'pickadate/lib/compressed')
 exports.pickadate = {
   base: {
@@ -38,6 +46,13 @@ exports.pickadate = {
     js: path.join(pickadateDir, 'picker.time.js'),
     css: path.join(pickadateDir, 'themes/default.time.css')
   }
+}
+
+// Bootstrap-Switch
+const bootstrapSwitchDir = path.join(publicBC, 'bootstrap-switch/dist')
+exports.bootstrapSwitch = {
+  css: path.join(bootstrapSwitchDir, 'css/bootstrap3/bootstrap-switch.min.css'),
+  js: path.join(bootstrapSwitchDir, 'js/bootstrap-switch.min.js')
 }
 
 // helper func to compile less files to CSS

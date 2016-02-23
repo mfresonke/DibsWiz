@@ -2,16 +2,21 @@
 
 const express = require('express')
 const path = require('path')
+const moment = require('moment')
 const Group = require('../../models/Group')
 const User = require('../../models/User')
+const Library = require('../../models/Library')
 const phone = require('../../helpers/phone')
 const routes = require('./routes')
 
 /* Components */
+// lib helpers
 const components = require('../../helpers/components')
 const formHelpers = components.formHelpers
 const awesomeCheckboxCSS = components.awesomeCheckboxCSS
 const pickadate = components.pickadate
+const bootstrapSwitch = components.bootstrapSwitch
+// custom JS
 const selectGroupJS = path.join(components.publicJS, 'meetup.js')
 const chooseDateJS = path.join(components.publicJS, 'schedule.js')
 
@@ -178,50 +183,74 @@ const processPhoneSubmissions = function (phoneNums, phoneNames, callback) {
 router.route(selectDaysWithIDRoute)
   .get(function (req, res, next) {
     const user = req.user
-    // Get and Verify Group
-    Group.findById(req.params.id).exec()
-      .then(function (group) {
-        // check if the group even exists
-        if (!group) {
-          throw new Error('Group not Found')
-        }
-        // check if the group was found
-        if (!group.isMember(user.phone)) {
-          throw new Error('User not a member of Group')
-        }
-        // render page
-        const basePage = selectPage(user, group)
-        res.render('meetup/new/select-date', basePage)
+    // Start off by creating the base select page off of info we already have.
+    Promise.all([
+      selectPage(user),
+      retrieveAndVerifyGroup(user, req.params.id)
+    ])
+      .then(function (results) {
+        const page = results[0]
+        const group = results[1]
+        page.group = group
+        res.render('meetup/new/select-date', page)
       })
       .catch(function (err) {
-        console.log(err)
         return next(err)
       })
   })
 
-const selectPage = function (user, group) {
-  return {
-    // User Defined Vars
-    user: user,
-    group: group,
-    // Visual Helper Variables
-    weekends: [new DispDay('Sun', 0), new DispDay('Sat', 6)],
-    weekdays: [
-      new DispDay('Mon', 1), new DispDay('Tues', 2), new DispDay('Wed', 3),
-      new DispDay('Thurs', 4), new DispDay('Fri', 5)
-    ],
-    // Navbar Vars
-    activePage: {schedule: true},
-    // Scripts and CSS
-    scripts: [pickadate.base.js, pickadate.time.js, formHelpers.js, chooseDateJS],
-    stylesheets: [awesomeCheckboxCSS, pickadate.base.css, pickadate.time.css, formHelpers.css]
-  }
+// Returns a promise containing a valid group or throws an error if not valid.
+const retrieveAndVerifyGroup = function (user, groupID) {
+  // Get and Verify Group
+  return Group.findById(groupID).exec()
+    .then(function (group) {
+      // check if the group even exists
+      if (!group) {
+        throw new Error('Group not Found')
+      }
+      // check if the group was found
+      if (!group.isMember(user.phone)) {
+        throw new Error('User not a member of Group')
+      }
+      return group
+    })
+}
+// Returns a promise for a page with filled in libraries.
+const selectPage = function (user) {
+  return Library.find().select('_id name').exec()
+    .then(function (libraries) {
+      return {
+        // To Be Filled Info
+        group: null,
+        // User Defined Vars
+        user: user,
+        // Visual Helper Variables
+        libraries: libraries,
+        weekends: [new DispDay('Sun', 0), new DispDay('Sat', 6)],
+        weekdays: [
+          new DispDay('Mon', 1), new DispDay('Tues', 2), new DispDay('Wed', 3),
+          new DispDay('Thurs', 4), new DispDay('Fri', 5)
+        ],
+        // Navbar Vars
+        activePage: {schedule: true},
+        // Scripts and CSS
+        scripts: [pickadate.base.js, pickadate.time.js, formHelpers.js, chooseDateJS, bootstrapSwitch.js],
+        stylesheets: [awesomeCheckboxCSS, pickadate.base.css, pickadate.time.css, formHelpers.css, bootstrapSwitch.css]
+      }
+    })
 }
 
 // Used for displaying a day with embedded day num info
 function DispDay (display, dayNum) {
   this.disp = display
   this.day = dayNum
+  // set the base object
+  const todayNum = moment().day()
+  let nextDateObj = moment().day(dayNum)
+  if (dayNum < todayNum) {
+    nextDateObj.add(1, 'week')
+  }
+  this.nextDate = nextDateObj.format('M/D')
 }
 
 const minValidNameLen = 1
