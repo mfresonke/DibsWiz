@@ -43,19 +43,23 @@
         <h3>What Library?</h3>
         <div class="form-group">
           <!-- <label for="sel1">Select list:</label> -->
-          <select class="form-control" id="library">
+          <select class="form-control" name="library" id="librarySelect">
             {{#each libraries}}
-              <option>{{this.name}}</option>
+              <option value="{{this._id}}">{{this.name}}</option>
             {{/each}}
           </select>
         </div>
       </div>
       <div class="col-lg-6" align="center">
         <h3>What Time to Start?</h3>
-        <input id="pickadate-begin" name="timeBegin" class="" type="text" placeholder="Start Time" readonly="" aria-haspopup="true">
+        <input id="meetupTimeBegin" name="timeBegin" type="text" placeholder="Start Time" disabled>
         <br/>
         <h3>What Time to End?</h3>
-        <input id="pickadate-end" name="timeEnd" class="" type="text" placeholder="End Time" readonly="" aria-haspopup="true">
+        <input id="meetupTimeEnd" name="timeEnd" type="text" placeholder="End Time" disabled>
+        <h3>In What Room?</h3>
+        <select class="form-control" name="room" id="roomSelect" disabled>
+          <!-- To be filled in from Server depending on Time and Library Selections -->
+        </select>
       </div>
     </div>
     <div class="row" align="center">

@@ -16,7 +16,7 @@ $(document).ready(function () {
   // Other Elements
   const ctrMembers = $('#ctrMembers')
 
-  const lookupDisplayNameURL = '/member/lookup'
+  const lookupDisplayNameURL = '/lookup/member'
 
   // addedUsers holds the primary key of the user: either their already-
   // registered username, or their to-be-registered phone number.

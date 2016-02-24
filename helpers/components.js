@@ -8,16 +8,20 @@ const path = require('path')
 
 // Common Folders
 
-const publicBC = path.join('/bower_components')
+const publicBC = '/bower_components'
 const publicFolder = '/public'
 const publicJS = path.join(publicFolder, 'js')
 const publicCSS = path.join(publicFolder, 'css')
 const publicModules = path.join(publicFolder, 'modules')
+const sharedFolder = '/shared'
 exports.publicFolder = publicFolder
 exports.publicBC = publicBC
 exports.publicJS = publicJS
 exports.publicCSS = publicCSS
 exports.publicModules = publicModules
+
+/* Begin Shared Code */
+exports.sharedConfig = path.join(sharedFolder, 'config.js')
 
 /* Begin Individual Modules */
 
